@@ -369,6 +369,7 @@ def main
         uninstall_program(program, progressbar)
         sleep(0.1)
       end
+      system("osascript -e 'display notification \"Uninstallation complete\" with title \"Nutek Security Platform\"'")
     else
       puts "Uninstall aborted!"
     end
@@ -388,6 +389,7 @@ def main
       end
       puts "\nFor more information, see"
       puts "https://nutek.neosb.net/docs/tools/bing-search/ and TOOLS section where you can find more information about each tool."
+      system("osascript -e 'display notification \"Installation complete\" with title \"Nutek Security Platform\"'")
     else
       puts "Install aborted!"
     end
