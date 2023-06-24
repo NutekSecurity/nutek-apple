@@ -1,0 +1,13 @@
+-i --attack --dry-run --unattended
+-i --knowledge --dry-run --unattended
+-i --code --dry-run --unattended
+-i --utility --dry-run --unattended
+-i --attack --code --dry-run --unattended
+-i --all --dry-run --unattended
+--list-attack
+--list-code
+--list-knowledge
+--list-utility
+--list
+-u --attack --unattended
+-u --all --unattended
