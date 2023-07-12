@@ -6,7 +6,7 @@ $attack = [
   "hashcat",
   "hydra",
   "john-jumbo",
-  "metasploit",
+  #"metasploit",
   "mitmproxy",
   "ncrack",
   "socat",
@@ -89,6 +89,34 @@ $utility = [
   "viu",
   "w3m",
   "whatmask",
+]
+
+$mini = [
+  "mitmproxy",
+  "httpie",
+  "smap",
+  "termshark",
+  "gau",
+  "httpx",
+  "feroxbuster",
+  "ffuf",
+  "brew tap caffix/amass && brew install amass",
+  "ripgrep-all",
+  "sd",
+  "ouch",
+  "jq",
+  "htmlq",
+  "exa",
+  "bat",
+  "warp",
+  "alacritty",
+  "tmux",
+  "fd",
+  "httrack",
+  "monolith",
+  "podman-desktop",
+  "nmap",
+  "nuclei",
 ]
 
 def load_programs(file_name)
@@ -175,17 +203,21 @@ def get_command_line_arguments
     print("\033[0m");
     puts "Usage: ruby nutek-apple.rb [options]"
     puts "Automated installation of hacking command line programs on macOS - Nutek Security Platform. Requires Homebrew.\nCurated by Nutek Security Solutions\n\tand Szymon Błaszczyński."
+    puts "Download the latest version from GitHub:"
+    puts "https://github.com/nutek-terminal/nutek-apple"
     puts "\nOptions:"
     puts "  -h, --help\t\t\t\tShow this help message and exit"
     puts "  -i, --install\t\t\t\tInstall programs. Choose programs to install with --attack, --code, --knowledge, --utility or --all"
     puts "  -u, --uninstall\t\t\tUninstall programs. Choose programs to uninstall with --attack, --code, --knowledge, --utility or --all"
     puts "  --web, --safari\t\t\tOpen Safari and lookup Nutek Security Platform website with all programs and tools explained"
     puts "  --all\t\t\t\t\tInstall or uninstall all programs"
+    puts "  --mini\t\t\t\tInstall or uninstall mini set of programs"
     puts "  --attack\t\t\t\tInstall or uninstall attack programs"
     puts "  --code\t\t\t\tInstall or uninstall code programs"
     puts "  --knowledge\t\t\t\tInstall or uninstall knowledge programs"
     puts "  --utility\t\t\t\tInstall or uninstall utility programs"
     puts "  --list\t\t\t\tList all programs"
+    puts "  --list-mini\t\t\t\tList mini set of programs"
     puts "  --list-attack\t\t\t\tList attack programs"
     puts "  --list-code\t\t\t\tList code programs"
     puts "  --list-knowledge\t\t\tList knowledge programs"
@@ -193,6 +225,7 @@ def get_command_line_arguments
     puts "  --unattended\t\t\t\tUnattended mode. Install selected programs without asking for confirmation"
     puts "  --dry-run\t\t\t\tDry run. Show what would be installed without actually installing anything"
     puts "\nExamples:"
+    puts "  ruby nutek-apple.rb --install --mini"
     puts "  ruby nutek-apple.rb --install --attack --utility --knowledge"
     puts "  ruby nutek-apple.rb --install --all"
     puts "  ruby nutek-apple.rb --uninstall --attack --code"
@@ -212,6 +245,8 @@ def get_command_line_arguments
     exit
   end
   if args.include?("--list")
+    puts "Mini:"
+    read_programs($mini)
     puts "Attack:"
     read_programs($attack)
     puts "\nCode:"
@@ -220,6 +255,13 @@ def get_command_line_arguments
     read_programs($knowledge)
     puts "\nUtility:"
     read_programs($utility)
+    puts "\nFor more information, see"
+    puts "https://nutek.neosb.net/docs/tools/bing-search/ and TOOLS section where you can find more information about each tool."
+    exit
+  end
+  if args.include?("--list-mini")
+    puts "Mini:"
+    read_programs($mini)
     puts "\nFor more information, see"
     puts "https://nutek.neosb.net/docs/tools/bing-search/ and TOOLS section where you can find more information about each tool."
     exit
@@ -294,18 +336,21 @@ def get_command_line_arguments
   if (args.include?("--install") || args.include?("-i")) &&
     ( !args.include?("--all") && !args.include?("--attack") && 
     !args.include?("--utility") && !args.include?("--code") && 
-    !args.include?("--knowledge") )
+    !args.include?("--knowledge") && !args.include?("--mini"))
     puts "❌ Error: -i and --install must be used with --all, --attack, --utility, --code, or --knowledge"
     exit false
   end
   if (args.include?("--uninstall") || args.include?("-u")) &&
     ( !args.include?("--all") && !args.include?("--attack") &&
     !args.include?("--utility") && !args.include?("--code") &&
-    !args.include?("--knowledge") )
+    !args.include?("--knowledge") && !args.include?("--mini"))
     puts "❌ Error: -u and --uninstall must be used with --all, --attack, --utility, --code, or --knowledge"
     exit false
   end
   programs = []
+  if args.include?("--mini")
+    programs += $mini
+  end
   if args.include?("--attack")
     programs += $attack
   end
@@ -319,7 +364,9 @@ def get_command_line_arguments
     programs += $knowledge
   end
   if args.include?("--all")
-    programs = $attack + $utility + $code + $knowledge
+    programs = $attack + $utility + $code + $knowledge + $mini
+    # deduplicate programs
+    programs = programs.uniq
   end
   if args.include?("--unattended")
     unattended = true
@@ -369,7 +416,7 @@ def main
         uninstall_program(program, progressbar)
         sleep(0.1)
       end
-      system("osascript -e 'display notification \"Uninstallation complete\" with title \"Nutek Security Platform\"'")
+      system("osascript -e 'display notification \"Uninstallation complete\" with title \"Nutek Security Platform\" sound name \"Boop\"' duration 1.5")
     else
       puts "Uninstall aborted!"
     end
@@ -389,7 +436,7 @@ def main
       end
       puts "\nFor more information, see"
       puts "https://nutek.neosb.net/docs/tools/bing-search/ and TOOLS section where you can find more information about each tool."
-      system("osascript -e 'display notification \"Installation complete\" with title \"Nutek Security Platform\"'")
+      system("osascript -e 'display notification \"Installation complete\" with title \"Nutek Security Platform\" sound name \"Boop\"' duration 1.5")
     else
       puts "Install aborted!"
     end
@@ -406,7 +453,7 @@ main
 # Notes
 ####################
 # This script is designed to be run on macOS.
-# This script is tested to run with Ruby 3.2.2 and Homebrew 4.0.24
+# This script is tested to run with Ruby 3.2.2 / 2.6.10p210 and Homebrew 4.0.28
 
 ####################
 # License

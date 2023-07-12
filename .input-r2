@@ -4,6 +4,7 @@
 -i --utility --dry-run --unattended
 -i --attack --code --dry-run --unattended
 -i --all --dry-run --unattended
+-i --mini --dry-run --unattended
 --list-attack
 --list-code
 --list-knowledge
