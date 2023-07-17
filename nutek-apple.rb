@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-$this_version = "0.1.2"
+$this_version = "0.1.3"
 
 $attack = [
   "bettercap",
@@ -143,7 +143,7 @@ def install_program(program, progressbar, dry_run)
     dry_run = ""
   end
   if program == "metasploit"
-    system("brew tap #{dry_run} homebrew/cask") do |output|
+    system("brew tap homebrew/cask") do |output|
       print output
     end
     system("brew install #{dry_run} --cask #{program.chomp}") do |output|
