@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+$this_version = "0.1.2"
+
 $attack = [
   "bettercap",
   "ettercap",
@@ -100,7 +102,7 @@ $mini = [
   "httpx",
   "feroxbuster",
   "ffuf",
-  "brew tap caffix/amass && brew install amass",
+  "amass",
   "ripgrep-all",
   "sd",
   "ouch",
@@ -117,6 +119,7 @@ $mini = [
   "podman-desktop",
   "nmap",
   "nuclei",
+  "browsh"
 ]
 
 def load_programs(file_name)
@@ -149,7 +152,15 @@ def install_program(program, progressbar, dry_run)
     puts "✅ #{program.chomp} installed!"
   end
   if program == "amass"
-    system("brew tap #{dry_run} owasp-amass/amass") do |output|
+    system("brew tap caffix/amass") do |output|
+      print output
+    end
+    system("brew install #{dry_run} #{program.chomp}") do |output|
+      print output
+    end
+    puts "✅ #{program.chomp} installed!"
+  elsif program == "browsh"
+    system("brew tap browsh-org/homebrew-browsh") do |output|
       print output
     end
     system("brew install #{dry_run} #{program.chomp}") do |output|
@@ -165,8 +176,18 @@ def install_program(program, progressbar, dry_run)
 end
 
 def uninstall_program(program, progressbar)
-  system("brew uninstall #{program.chomp}") do |output|
+  system("brew uninstall #{dry_run} #{program.chomp}") do |output|
       print output
+  end
+  if program == 'amass'
+    system("brew untap owasp-amass/amass") do |output|
+      print output
+    end
+  end
+  if program == 'browsh'
+    system("brew untap browsh-org/homebrew-browsh") do |output|
+      print output
+    end
   end
   puts "✅ #{program.chomp} uninstalled!"
 end
@@ -179,6 +200,38 @@ def get_yes_no_input(prompt)
     return true
   else
     return false
+  end
+end
+
+def lates_version()
+  raw_varsion = `git -c 'versionsort.suffix=-' ls-remote --exit-code --refs --sort='version:refname' --tags https://github.com/nutek-terminal/nutek-apple.git '*.*.*' | tail --lines=1`
+  version = raw_varsion.split("/")[2].chomp
+  return version
+end
+
+def update(args)
+  if not args.include?("--no-update")
+    puts "Checking for updates..."
+    latest_version = lates_version()
+    if latest_version != $this_version
+      puts "New version available: #{latest_version}"
+      puts "Updating..."
+      # check if we're in a git repo
+      if File.directory?(".git")
+        # check if we're in the right repo
+        if `git remote get-url origin` == "https://github.com/nutek-terminal/nutek-apple.git"
+          system("git pull origin main")
+          puts "Updated to version #{lates_version()}"
+          exit
+        else
+          puts "❌ Error: Not in the right repo, not updating."
+        end
+      else
+        puts "❌ Error: Not in a git repo, not updating."
+      end
+    else
+      puts "✅ Already up to date.\n"
+    end
   end
 end
 
@@ -205,6 +258,13 @@ def get_command_line_arguments
     puts "Automated installation of hacking command line programs on macOS - Nutek Security Platform. Requires Homebrew.\nCurated by Nutek Security Solutions\n\tand Szymon Błaszczyński."
     puts "Download the latest version from GitHub:"
     puts "https://github.com/nutek-terminal/nutek-apple"
+    puts "This version: #{$this_version} GitHub version: #{lates_version()}"
+    if $this_version != lates_version()
+      puts "New version available: #{lates_version()} do you want to update?"
+      if get_yes_no_input("Update? [Y/n] ")
+        update(args)
+      end
+    end
     puts "\nOptions:"
     puts "  -h, --help\t\t\t\tShow this help message and exit"
     puts "  -i, --install\t\t\t\tInstall programs. Choose programs to install with --attack, --code, --knowledge, --utility or --all"
@@ -241,13 +301,14 @@ def get_command_line_arguments
     exit
   end
   if args.include?("--safari") || args.include?("--web")
-    system("open -a Safari https://nutek.neosb.net/docs/tools/bing-search/")
+    system("open -a Safari https://nutek.neosb.net/")
     exit
   end
+  update(args)
   if args.include?("--list")
     puts "Mini:"
     read_programs($mini)
-    puts "Attack:"
+    puts "\nAttack:"
     read_programs($attack)
     puts "\nCode:"
     read_programs($code)

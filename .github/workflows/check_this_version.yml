@@ -1,0 +1,20 @@
+name: Check Ruby version
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Ruby version
+        run: |
+          git fetch --tags
+          this_version=$(cat nutek-apple.rb | grep $this_version | awk '{print $2}')
+          latest_tag=$(git describe --tags --abbrev=0)
+          if [[ $this_version != $latest_tag ]]; then
+            echo "The Ruby version in nutek-apple.rb does not match the latest tag."
+            exit 1
+          fi
