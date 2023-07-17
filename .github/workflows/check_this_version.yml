@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Check Ruby version
         uses: actions/checkout@v3
-        # git fetch --tags
+      - run: git fetch --tags
         # git tag | tail --lines 1
       - run: |
           this_version=$(cat nutek-apple.rb | grep \$this_version | awk '{print $3}' | sed 's/"//g' | head -n 1)
