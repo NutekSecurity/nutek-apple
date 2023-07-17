@@ -11,8 +11,9 @@ jobs:
     steps:
       - name: Check Ruby version
         uses: actions/checkout@v3
+        # git fetch --tags
+        # git tag | tail --lines 1
       - run: |
-          git fetch --tags
           this_version=$(cat nutek-apple.rb | grep \$this_version | awk '{print $3}' | sed 's/"//g' | head -n 1)
           latest_tag=$(git describe --tags --abbrev=0)
           if [[ $this_version != $latest_tag ]]; then
