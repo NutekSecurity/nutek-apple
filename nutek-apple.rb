@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 
-$this_version = "0.1.3"
+# update this version number when updating the script
+# this is used to check for updates
+# tag the commit with the version number at the same time
+$this_version = "0.1.4"
 
 $attack = [
   "bettercap",
@@ -209,19 +212,18 @@ def lates_version()
   return version
 end
 
-def update(args)
+def update(args, github_version)
   if not args.include?("--no-update")
     puts "Checking for updates..."
-    latest_version = lates_version()
-    if latest_version != $this_version
-      puts "New version available: #{latest_version}"
+    if github_version != $this_version
+      puts "New version available: #{github_version}"
       puts "Updating..."
       # check if we're in a git repo
       if File.directory?(".git")
         # check if we're in the right repo
         if `git remote get-url origin` == "https://github.com/nutek-terminal/nutek-apple.git"
           system("git pull origin main")
-          puts "Updated to version #{lates_version()}"
+          puts "Updated to version #{github_version}"
           exit
         else
           puts "❌ Error: Not in the right repo, not updating."
@@ -238,6 +240,7 @@ end
 def get_command_line_arguments
   args = ARGV
   uninstall_argument = false
+  github_version = lates_version()
   if args.length == 0 || args.include?("--help") || args.include?("-h")
     print("\033[1;31m");
     print("::::    ::: :::    ::: ::::::::::: :::::::::: :::    :::\n");
@@ -258,11 +261,11 @@ def get_command_line_arguments
     puts "Automated installation of hacking command line programs on macOS - Nutek Security Platform. Requires Homebrew.\nCurated by Nutek Security Solutions\n\tand Szymon Błaszczyński."
     puts "Download the latest version from GitHub:"
     puts "https://github.com/nutek-terminal/nutek-apple"
-    puts "This version: #{$this_version} GitHub version: #{lates_version()}"
-    if $this_version != lates_version()
-      puts "New version available: #{lates_version()} do you want to update?"
+    puts "This version: #{$this_version} GitHub version: #{github_version}"
+    if $this_version != github_version
+      puts "New version available: #{github_version} do you want to update?"
       if get_yes_no_input("Update? [Y/n] ")
-        update(args)
+        update(args, github_version)
       end
     end
     puts "\nOptions:"
@@ -304,7 +307,7 @@ def get_command_line_arguments
     system("open -a Safari https://nutek.neosb.net/")
     exit
   end
-  update(args)
+  update(args, github_version)
   if args.include?("--list")
     puts "Mini:"
     read_programs($mini)
@@ -440,7 +443,7 @@ def get_command_line_arguments
     dry_run = false
   end
   if programs.empty?
-    puts "❌ Error: No programs selected. Please select at least one program group to install or uninstall."
+    puts "❌ Error: No programs selected. Please select at least one program group to install or uninstall.\nView help❓ with -h or --help for more information."
     exit false
   end
   return uninstall_argument, programs, unattended, dry_run
