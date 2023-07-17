@@ -11,11 +11,11 @@ jobs:
     steps:
       - name: Check Ruby version
         uses: actions/checkout@v3
-      - run: |
+      -  run: |
           git fetch --tags && \
           this_version=$(cat nutek-apple.rb | grep \$this_version | awk '{print $3}' | sed 's/"//g' | head -n 1) && \
           latest_tag=$(git describe --tags --abbrev=0 --always) && \
           if [[ $this_version != $latest_tag ]]; then \
-            echo "The Ruby version in nutek-apple.rb does not match the latest tag." && \
+            echo "The Ruby version in nutek-apple.rb - $this_version - does not match the latest tag - $latest_tag" && \
             exit 1 ; \
           fi 
