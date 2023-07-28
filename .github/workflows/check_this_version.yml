@@ -1,4 +1,4 @@
-name: Check Ruby version
+name: Update status
 
 on:
   push:

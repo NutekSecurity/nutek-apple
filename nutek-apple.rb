@@ -122,7 +122,8 @@ $mini = [
   "podman-desktop",
   "nmap",
   "nuclei",
-  "browsh"
+  "w3m",
+  "felinks",
 ]
 
 def load_programs(file_name)

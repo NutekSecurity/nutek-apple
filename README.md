@@ -2,6 +2,8 @@
 
 Nutek Security Platform for macOS operating systems.
 
+[![update status](https://github.com/nutek-terminal/nutek-apple/actions/workflows/check_this_version.yml/badge.svg?branch=main)](https://github.com/nutek-terminal/nutek-apple/actions/workflows/check_this_version.yml)
+
 ## What it does?
 
 This - `nutek-apple.rb` - script for macOS operating systems installs
@@ -13,7 +15,34 @@ in many ways similar, or even less capable, because in command line - you're
 on top, you're left alone like Alice in Wonderland deep inside your dreams of power, and you know what? You can have this power! Just follow along.
 
 ### List of tools
-
+* Mini
+  - mitmproxy
+  - httpie
+  - smap
+  - termshark
+  - gau
+  - httpx
+  - feroxbuster
+  - ffuf
+  - amass
+  - ripgrep-all
+  - sd
+  - ouch
+  - jq
+  - htmlq
+  - exa
+  - bat
+  - warp
+  - alacritty
+  - tmux
+  - fd
+  - httrack
+  - monolith
+  - podman-desktop
+  - nmap
+  - nuclei
+  - w3m
+  - felinks
 * Attack
   - bettercap
   - ettercap
