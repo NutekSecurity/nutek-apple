@@ -129,7 +129,7 @@ on top, you're left alone like Alice in Wonderland deep inside your dreams of po
 
 ## Installation
 
-Either clone, or download this repository to some safe location on your Apple computer. Make sure you have Ruby installed, and also Homebrew (that's from where we'll be fetching apps).
+Clone this repository `git clone https://github.com/nutek-terminal/nutek-apple.git` to some safe location on your Apple computer. Make sure you have Ruby installed (preinstalled with every on Mac), and also Homebrew (that's from where we'll be fetching apps) - you can get Homebrew from [brew.sh](https://brew.sh).
 
 Run this command:
 
