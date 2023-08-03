@@ -3,7 +3,7 @@
 # update this version number when updating the script
 # this is used to check for updates
 # tag the commit with the version number at the same time
-$this_version = "0.1.6"
+$this_version = "0.1.7"
 
 $attack = [
   "bettercap",
