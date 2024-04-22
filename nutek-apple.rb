@@ -2,11 +2,6 @@
 
 require 'os'
 
-# update this version number when updating the script
-# this is used to check for updates
-# tag the commit with the version number at the same time
-$this_version = '1.0.2'
-
 $gui = %w[
   podman-desktop
   imhex
@@ -189,47 +184,34 @@ def lates_version
   raw_varsion.split('/')[2].chomp
 end
 
-def update(args, github_version)
+def update(args)
   return if args.include?('--no-update')
 
-  puts 'Checking for updates...'
-  if github_version != $this_version
-    puts "New version available: #{github_version}"
-    puts 'Updating...'
-    # check if we're in a git repo
-    if File.directory?('.git')
-      # check if we're in the right repo
-      if `git remote get-url origin`.chomp == 'https://github.com/NutekSecurity/nutek-apple.git'
-        system('git pull origin main --rebase') do |output|
-          print output
-        end
-        puts "Updated to version #{github_version}"
-        exit
-      else
-        puts '❌ Error: Not in the right repo, not updating.'
+  puts 'Updating...'
+  # check if we're in a git repo
+  if File.directory?('.git')
+    # check if we're in the right repo
+    if `git remote get-url origin`.chomp == 'https://github.com/NutekSecurity/nutek-apple.git'
+      system('git pull origin main --rebase') do |output|
+        print output
       end
     else
-      puts '❌ Error: Not in a git repo, not updating.'
+      puts '❌ Error: Not in the right repo, not updating.'
     end
   else
-    puts "✅ Already up to date.\n"
+    puts '❌ Error: Not in a git repo, not updating.'
   end
 end
 
 def get_command_line_arguments
   args = ARGV
   uninstall_argument = false
-  github_version = lates_version
   if args.length == 0 || args.include?('--help') || args.include?('-h')
     puts 'Usage: ruby nutek-apple.rb [options]'
-    puts "Automated installation of hacking command line programs on macOS - Nutek Security Platform. Requires Homebrew.\nCurated by Nutek Security Solutions\n\tand Szymon Błaszczyński."
-    puts 'Download the latest version from GitHub:'
+    puts "Automated installation of hacking command line programs on macOS - Nutek Security Platform. Requires Homebrew.\nCurated by Nutek Security"
+    puts 'Downloading the latest version from GitHub:'
     puts 'https://github.com/NutekSecurity/nutek-apple'
-    puts "This version: #{$this_version} GitHub version: #{github_version}"
-    if $this_version != github_version
-      puts "New version available: #{github_version} do you want to update?"
-      update(args, github_version) if get_yes_no_input('Update? [Y/n] ')
-    end
+    # Always update
     puts "\nOptions:"
     puts "  -h, --help\t\t\t\tShow this help message and exit"
     puts "  -i, --install\t\t\t\tInstall programs. Choose programs to install with --gui, --cli or --all"
@@ -281,7 +263,7 @@ def get_command_line_arguments
     puts 'SOFTWARE.'
     exit
   end
-  update(args, github_version)
+  update(args)
   if args.include?('--list')
     puts 'cli:'
     read_programs($cli)
