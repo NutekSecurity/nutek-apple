@@ -7,6 +7,9 @@ $gui = %w[
   imhex
   warp
   alacritty
+  wireshark
+  zui
+  font-hack-nerd-font
 ]
 
 $cli = %w[
@@ -38,11 +41,17 @@ $cli = %w[
   amass
   jq
   htmlq
-  tmux
   httrack
   monolith
   mdcat
   ouch
+  exploitdb
+  asciinema
+  agg
+  hashcat
+  john-jumbo
+  mdbook
+
 ]
 
 def load_programs(file_name)
@@ -205,8 +214,10 @@ end
 
 def get_command_line_arguments
   args = ARGV
+  update(args)
   uninstall_argument = false
-  if args.length == 0 || args.include?('--help') || args.include?('-h')
+  if args.length == 0 || args.include?('--help') || args.include?('-h') ||
+     (args.length == 1 && args.include?('--no-update'))
     puts 'Usage: ruby nutek-apple.rb [options]'
     puts "Automated installation of hacking command line programs on macOS - Nutek Security Platform. Requires Homebrew.\nCurated by Nutek Security"
     puts 'Downloading the latest version from GitHub:'
@@ -263,7 +274,6 @@ def get_command_line_arguments
     puts 'SOFTWARE.'
     exit
   end
-  update(args)
   if args.include?('--list')
     puts 'cli:'
     read_programs($cli)
