@@ -1,9 +1,11 @@
 #!/usr/bin/env ruby
 
+require 'os'
+
 # update this version number when updating the script
 # this is used to check for updates
 # tag the commit with the version number at the same time
-$this_version = '0.1.9'
+$this_version = '0.1.11'
 
 $gui = %w[
   podman-desktop
@@ -63,19 +65,45 @@ def read_programs(programs)
 end
 
 def install_program(program, progressbar, dry_run)
+  command = "which #{program}"
+  output = `#{command}`
+  if !output.empty?
+    puts "✅ #{program} already installed!"
+    return
+  end
+  if (program == 'podman-desktop') && OS.linux?
+    puts "❌ Error: #{program.chomp} is not available on in Homebrew for Linux. Try another package manager or install manually."
+    return
+  end
   dry_run = if dry_run
               '--dry-run'
             else
               ''
             end
-  if program == 'metasploit'
-    system('brew tap homebrew/cask') do |output|
-      print output
+  if program == 'metasploit' or program == 'mitmproxy'
+    # No longer necessary
+    # system('brew tap homebrew/cask') do |output|
+    #   print output
+    # end
+    if OS.linux? && program == 'mitmproxy' and dry_run == ''
+      `mkdir ~/mitmproxy`
+      `curl -O -L https://downloads.mitmproxy.org/10.3.0/mitmproxy-10.3.0-linux-x86_64.tar.gz`
+      `tar -xzf mitmproxy-10.3.0-linux-x86_64.tar.gz -C ~/mitmproxy`
+      `rm mitmproxy-10.3.0-linux-x86_64.tar.gz`
+      puts "✅ #{program.chomp} installed!"
+      return
+    elsif OS.linux? && program == 'mitmproxy' and dry_run == '--dry-run'
+      puts '✅ mitmproxy installed!'
+      return
+    end
+    if program == 'metasploit' && OS.linux?
+      return
     end
     system("brew install #{dry_run} --cask #{program.chomp}") do |output|
       print output
     end
     puts "✅ #{program.chomp} installed!"
+    return
   end
   if program == 'amass'
     system('brew tap caffix/amass') do |output|
@@ -85,6 +113,7 @@ def install_program(program, progressbar, dry_run)
       print output
     end
     puts "✅ #{program.chomp} installed!"
+    return
   elsif program == 'browsh'
     system('brew tap browsh-org/homebrew-browsh') do |output|
       print output
@@ -93,6 +122,29 @@ def install_program(program, progressbar, dry_run)
       print output
     end
     puts "✅ #{program.chomp} installed!"
+    return
+  elsif (program == 'alacritty' || program == 'imhex') && OS.linux?
+    if dry_run == '--dry-run'
+      puts "✅ #{program} installed!"
+      return
+    end
+    command = 'which dnf'
+    output = `#{command}`
+    if output.empty?
+      system("sudo apt install -y #{program}") do |output|
+        print output
+      end
+      puts "✅ #{program} installed!"
+      return
+    else
+      system("sudo dnf install -y #{program}") do |output|
+        print output
+      end
+      puts "✅ #{program} installed!"
+      return
+    end
+  elsif program == 'warp' && OS.linux?
+    puts "❌ Error: Download Warp from https://www.warp.dev/ and install manually using dpkg (.deb) or dnf (.rpm)."
   else
     system("brew install #{dry_run} #{program.chomp}") do |output|
       print output
@@ -102,6 +154,14 @@ def install_program(program, progressbar, dry_run)
 end
 
 def uninstall_program(program, progressbar)
+  if program == 'mitmproxy' && OS.linux?
+    # Check if the directory exists and remove it
+    if File.directory?('~/mitmproxy')
+      `rm -rf ~/mitmproxy`
+    end
+    puts "✅ #{program.chomp} uninstalled!"
+    return
+  end
   system("brew uninstall #{dry_run} #{program.chomp}") do |output|
     print output
   end
@@ -128,7 +188,7 @@ def get_yes_no_input(prompt)
 end
 
 def lates_version
-  raw_varsion = `git -c 'versionsort.suffix=-' ls-remote --exit-code --refs --sort='version:refname' --tags https://github.com/nutek-terminal/nutek-apple.git '*.*.*' | tail --lines=1`
+  raw_varsion = `git -c 'versionsort.suffix=-' ls-remote --exit-code --refs --sort='version:refname' --tags https://github.com/NutekSecurity/nutek-apple.git '*.*.*' | tail --lines=1`
   raw_varsion.split('/')[2].chomp
 end
 
@@ -142,7 +202,7 @@ def update(args, github_version)
     # check if we're in a git repo
     if File.directory?('.git')
       # check if we're in the right repo
-      if `git remote get-url origin` == 'https://github.com/nutek-terminal/nutek-apple.git'
+      if `git remote get-url origin` == 'https://github.com/NutekSecurity/nutek-apple.git'
         system('git pull origin main')
         puts "Updated to version #{github_version}"
         exit
@@ -175,7 +235,6 @@ def get_command_line_arguments
     puts "  -h, --help\t\t\t\tShow this help message and exit"
     puts "  -i, --install\t\t\t\tInstall programs. Choose programs to install with --gui, --cli or --all"
     puts "  -u, --uninstall\t\t\tUninstall programs. Choose programs to uninstall with --gui, --cli or --all"
-    puts "  --web, --safari\t\t\tOpen Safari and lookup nuteksecurity.com"
     puts "  --license\t\t\t\tShow license information"
     puts "  --all\t\t\t\t\tInstall or uninstall all programs"
     puts "  --cli\t\t\t\tInstall or uninstall cli set of programs"
@@ -183,7 +242,7 @@ def get_command_line_arguments
     puts "  --list\t\t\t\tList all programs"
     puts "  --list-cli\t\t\t\tList cli set of programs"
     puts "  --list-gui\t\t\t\tList gui programs"
-    puts "  --unattended\t\t\t\tUnattended mode. Install selected programs without asking for confirmation"
+    puts "  --unattended\t\t\t\tUnattended mode. Install selected programs without asking for confirmation (on Linux run with sudo)"
     puts "  --dry-run\t\t\t\tDry run. Show what would be installed without actually installing anything"
     puts "\nExamples:"
     puts '  ruby nutek-apple.rb --install --cli'
@@ -221,10 +280,6 @@ def get_command_line_arguments
     puts 'LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,'
     puts 'OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE'
     puts 'SOFTWARE.'
-    exit
-  end
-  if args.include?('--safari') || args.include?('--web')
-    system('open -a Safari https://nuteksecurity.com/')
     exit
   end
   update(args, github_version)
@@ -373,6 +428,8 @@ def main
   puts 'Monero address: 87G8nLBPdwAEPycmWWAhUhZC8kUuuFgjX8zEUw1VjvNMPdkUWzxikocQyLtycwqzJfChR5bNVyXU87m5vT4Fy9gtS6Q5X8L'
   puts 'or Bitcoin:'
   puts 'Bitcoin address: 3AhSZUecGQDk97iCGtUtCq3kqCdndsZEF1'
+  puts ''
+  puts 'https://nuteksecurity.com/'
 end
 
 main
@@ -384,5 +441,4 @@ main
 ####################
 # Notes
 ####################
-# This script is designed to be run on macOS.
-# This script is tested to run with Ruby 3.2.2 / 2.6.10p210 and Homebrew 4.0.28
+# This script is designed to be run on macOS, but as well may work on Linux.
