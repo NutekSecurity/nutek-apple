@@ -67,7 +67,7 @@ end
 def install_program(program, progressbar, dry_run)
   command = "which #{program}"
   output = `#{command}`
-  if !output.empty?
+  unless output.empty?
     puts "✅ #{program} already installed!"
     return
   end
@@ -80,7 +80,7 @@ def install_program(program, progressbar, dry_run)
             else
               ''
             end
-  if program == 'metasploit' or program == 'mitmproxy'
+  if %w[metasploit mitmproxy].include?(program)
     # No longer necessary
     # system('brew tap homebrew/cask') do |output|
     #   print output
@@ -96,9 +96,8 @@ def install_program(program, progressbar, dry_run)
       puts '✅ mitmproxy installed!'
       return
     end
-    if program == 'metasploit' && OS.linux?
-      return
-    end
+    return if program == 'metasploit' && OS.linux?
+
     system("brew install #{dry_run} --cask #{program.chomp}") do |output|
       print output
     end
@@ -113,7 +112,7 @@ def install_program(program, progressbar, dry_run)
       print output
     end
     puts "✅ #{program.chomp} installed!"
-    return
+    nil
   elsif program == 'browsh'
     system('brew tap browsh-org/homebrew-browsh') do |output|
       print output
@@ -122,8 +121,8 @@ def install_program(program, progressbar, dry_run)
       print output
     end
     puts "✅ #{program.chomp} installed!"
-    return
-  elsif (program == 'alacritty' || program == 'imhex') && OS.linux?
+    nil
+  elsif %w[alacritty imhex].include?(program) && OS.linux?
     if dry_run == '--dry-run'
       puts "✅ #{program} installed!"
       return
@@ -135,16 +134,16 @@ def install_program(program, progressbar, dry_run)
         print output
       end
       puts "✅ #{program} installed!"
-      return
+      nil
     else
       system("sudo dnf install -y #{program}") do |output|
         print output
       end
       puts "✅ #{program} installed!"
-      return
+      nil
     end
   elsif program == 'warp' && OS.linux?
-    puts "❌ Error: Download Warp from https://www.warp.dev/ and install manually using dpkg (.deb) or dnf (.rpm)."
+    puts '❌ Error: Download Warp from https://www.warp.dev/ and install manually using dpkg (.deb) or dnf (.rpm).'
   else
     system("brew install #{dry_run} #{program.chomp}") do |output|
       print output
@@ -156,9 +155,7 @@ end
 def uninstall_program(program, progressbar)
   if program == 'mitmproxy' && OS.linux?
     # Check if the directory exists and remove it
-    if File.directory?('~/mitmproxy')
-      `rm -rf ~/mitmproxy`
-    end
+    `rm -rf ~/mitmproxy` if File.directory?('~/mitmproxy')
     puts "✅ #{program.chomp} uninstalled!"
     return
   end
@@ -202,8 +199,10 @@ def update(args, github_version)
     # check if we're in a git repo
     if File.directory?('.git')
       # check if we're in the right repo
-      if `git remote get-url origin` == 'https://github.com/NutekSecurity/nutek-apple.git'
-        system('git pull origin main')
+      if `git remote get-url origin`.chomp == 'https://github.com/NutekSecurity/nutek-apple.git'
+        system('git pull origin main') do |output|
+          print output
+        end
         puts "Updated to version #{github_version}"
         exit
       else
