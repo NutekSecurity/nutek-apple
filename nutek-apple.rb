@@ -200,7 +200,7 @@ def update(args, github_version)
     if File.directory?('.git')
       # check if we're in the right repo
       if `git remote get-url origin`.chomp == 'https://github.com/NutekSecurity/nutek-apple.git'
-        system('git pull origin main') do |output|
+        system('git pull origin main --rebase') do |output|
           print output
         end
         puts "Updated to version #{github_version}"
