@@ -5,7 +5,7 @@ require 'os'
 # update this version number when updating the script
 # this is used to check for updates
 # tag the commit with the version number at the same time
-$this_version = '0.1.11'
+$this_version = '1.0.0'
 
 $gui = %w[
   podman-desktop
