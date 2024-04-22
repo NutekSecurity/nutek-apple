@@ -4,7 +4,7 @@ Nutek Security Platform for macOS operating systems.
 
 ## What it does?
 
-This - `nutek-apple.rb` - script for macOS operating systems installs
+This - `nutek-apple.rb` - script for macOS and Linux operating systems installs
 all the neccessairly tools for well prepared hacker, bug hunter or
 a seasoned hobbiest willing to pursue a way of turning things inside out and
 is not scared to use only command line tools. Why? Almost all of the fancy
@@ -14,7 +14,7 @@ on top, you're left alone like Alice in Wonderland deep inside your dreams of po
 
 ## Installation
 
-Clone this repository `git clone https://github.com/nutek-terminal/nutek-apple.git` to some safe location on your Apple computer. Make sure you have Ruby installed (preinstalled with every on Mac), and also Homebrew (that's from where we'll be fetching apps) - you can get Homebrew from [brew.sh](https://brew.sh).
+Clone this repository `git clone https://github.com/NutekSecurity/nutek-apple.git` to some safe location on your Apple/PC computer. Make sure you have Ruby installed, and also Homebrew (that's from where we'll be fetching apps) - you can get Homebrew from [brew.sh](https://brew.sh).
 
 Run this command:
 
