@@ -3,127 +3,49 @@
 # update this version number when updating the script
 # this is used to check for updates
 # tag the commit with the version number at the same time
-$this_version = "0.1.7"
+$this_version = "0.1.8"
 
-$attack = [
-  "bettercap",
-  "ettercap",
-  "hashcat",
-  "hydra",
-  "john-jumbo",
-  #"metasploit",
-  "mitmproxy",
-  "ncrack",
-  "socat",
-  "sqlmap",
-  "xh",
-]
-
-$code = [
-  "adns",
-  "bvi",
-  "capstone",
-  "cflow",
-  "cppcheck",
-  "fmt",
-  "gitleaks",
-  "grpc",
-  "hyperscan",
-  "jansson",
-  "radare2",
-  "rats",
-  "zzuf",
-]
-
-$knowledge = [
-  "amass",
-  "arp-scan",
-  "bmon",
-  "dnsx",
-  "feroxbuster",
-  "ffuf",
-  "fping",
-  "gau",
-  "gobuster",
-  "httpx",
-  "httrack",
-  "masscan",
-  "mtr",
-  "nethogs",
-  "ngrep",
-  "nikto",
-  "nmap",
-  "nuclei",
-  "p0f",
-  "rustscan",
-  "smap",
-  "tcpdump",
-  "tcpflow",
-  "termshark",
-  "testssl",
-  "zmap",
-]
-
-$utility = [
-  "argon2",
-  "bat",
-  "bottom",
-  "discount",
-  "dos2unix",
-  "dust",
-  "exa",
-  "expect",
-  "hexyl",
-  "htmlq",
-  "ipcalc",
-  "irssi",
-  "jq",
-  "jql",
-  "macchina",
-  "mdcat",
-  "monolith",
-  "neovim",
-  "openvpn",
-  "ouch",
-  "pandoc",
-  "podman",
-  "podman-compose",
-  "ripgrep-all",
-  "sd",
-  "tmux",
-  "viu",
-  "w3m",
-  "whatmask",
-]
-
-$mini = [
-  "mitmproxy",
-  "httpie",
-  "smap",
-  "termshark",
-  "gau",
-  "httpx",
-  "feroxbuster",
-  "ffuf",
-  "amass",
-  "ripgrep-all",
-  "sd",
-  "ouch",
-  "jq",
-  "htmlq",
-  "exa",
-  "bat",
+$gui = [
+  "podman-desktop",
+  "imhex",
   "warp",
   "alacritty",
-  "tmux",
+]
+
+$cli = [
+  "podman",
+  "neovim",
+  "openvpn",
+  "irssi",
+  "dos2unix",
+  "ipcalc",
+  "whatmask",
+  "expect",
   "fd",
+  "tmux",
+  "lsd",
+  "bat",
+  "ripgrep-all",
+  "sd",
+  "termshark",
+  "httpie",
+  "smap",
+  "nmap",
+  "p0f",
+  "masscan",
+  "feroxbuster",
+  "ffuf",
+  "nuclei",
+  "mitmproxy",
+  "httpx",
+  "amass",
+  "jq",
+  "htmlq",
+  "tmux",
   "httrack",
   "monolith",
-  "podman-desktop",
-  "nmap",
-  "nuclei",
-  "w3m",
-  "felinks",
+  "mdcat",
+  "ouch",
 ]
 
 def load_programs(file_name)
@@ -243,25 +165,10 @@ def get_command_line_arguments
   uninstall_argument = false
   github_version = lates_version()
   if args.length == 0 || args.include?("--help") || args.include?("-h")
-    print("\033[1;31m");
-    print("::::    ::: :::    ::: ::::::::::: :::::::::: :::    :::\n");
-    print("\033[1;31m");
-    print(":+:+:   :+: :+:    :+:     :+:     :+:        :+:   :+:\n");
-    print("\033[1;32m");
-    print(":+:+:+  +:+ +:+    +:+     +:+     +:+        +:+  +:+\n");
-    print("\033[1;32m");
-    print("+#+ +:+ +#+ +#+    +:+     +#+     +#++:++#   +#++:++ \n");
-    print("\033[1;32m");    
-    print("+#+  +#+#+# +#+    +#+     +#+     +#+        +#+  +#+\n");
-    print("\033[1;34m");
-    print("#+#   #+#+# #+#    #+#     #+#     #+#        #+#   #+#\n");
-    print("\033[1;34m");
-    print("###    ####  ########      ###     ########## ###    ###\n");
-    print("\033[0m");
     puts "Usage: ruby nutek-apple.rb [options]"
     puts "Automated installation of hacking command line programs on macOS - Nutek Security Platform. Requires Homebrew.\nCurated by Nutek Security Solutions\n\tand Szymon Błaszczyński."
     puts "Download the latest version from GitHub:"
-    puts "https://github.com/nutek-terminal/nutek-apple"
+    puts "https://github.com/NutekSecurity/nutek-apple"
     puts "This version: #{$this_version} GitHub version: #{github_version}"
     if $this_version != github_version
       puts "New version available: #{github_version} do you want to update?"
@@ -271,92 +178,76 @@ def get_command_line_arguments
     end
     puts "\nOptions:"
     puts "  -h, --help\t\t\t\tShow this help message and exit"
-    puts "  -i, --install\t\t\t\tInstall programs. Choose programs to install with --attack, --code, --knowledge, --utility or --all"
-    puts "  -u, --uninstall\t\t\tUninstall programs. Choose programs to uninstall with --attack, --code, --knowledge, --utility or --all"
-    puts "  --web, --safari\t\t\tOpen Safari and lookup Nutek Security Platform website with all programs and tools explained"
+    puts "  -i, --install\t\t\t\tInstall programs. Choose programs to install with --gui, --cli or --all"
+    puts "  -u, --uninstall\t\t\tUninstall programs. Choose programs to uninstall with --gui, --cli or --all"
+    puts "  --web, --safari\t\t\tOpen Safari and lookup nuteksecurity.com"
+    puts "  --license\t\t\t\tShow license information"
     puts "  --all\t\t\t\t\tInstall or uninstall all programs"
-    puts "  --mini\t\t\t\tInstall or uninstall mini set of programs"
-    puts "  --attack\t\t\t\tInstall or uninstall attack programs"
-    puts "  --code\t\t\t\tInstall or uninstall code programs"
-    puts "  --knowledge\t\t\t\tInstall or uninstall knowledge programs"
-    puts "  --utility\t\t\t\tInstall or uninstall utility programs"
+    puts "  --cli\t\t\t\tInstall or uninstall cli set of programs"
+    puts "  --gui\t\t\t\tInstall or uninstall GUI programs"
     puts "  --list\t\t\t\tList all programs"
-    puts "  --list-mini\t\t\t\tList mini set of programs"
-    puts "  --list-attack\t\t\t\tList attack programs"
-    puts "  --list-code\t\t\t\tList code programs"
-    puts "  --list-knowledge\t\t\tList knowledge programs"
-    puts "  --list-utility\t\t\tList utility programs"
+    puts "  --list-cli\t\t\t\tList cli set of programs"
+    puts "  --list-gui\t\t\t\tList gui programs"
     puts "  --unattended\t\t\t\tUnattended mode. Install selected programs without asking for confirmation"
     puts "  --dry-run\t\t\t\tDry run. Show what would be installed without actually installing anything"
     puts "\nExamples:"
-    puts "  ruby nutek-apple.rb --install --mini"
-    puts "  ruby nutek-apple.rb --install --attack --utility --knowledge"
+    puts "  ruby nutek-apple.rb --install --cli"
+    puts "  ruby nutek-apple.rb --install --gui"
     puts "  ruby nutek-apple.rb --install --all"
-    puts "  ruby nutek-apple.rb --uninstall --attack --code"
+    puts "  ruby nutek-apple.rb --uninstall --gui"
     puts "  ruby nutek-apple.rb --uninstall --all"
     puts "  ruby nutek-apple.rb --list"
-    puts "  ruby nutek-apple.rb --list-attack"
-    puts "  ruby nutek-apple.rb --unattended --install --attack"
+    puts "  ruby nutek-apple.rb --list-gui"
+    puts "  ruby nutek-apple.rb --unattended --install --gui"
     puts "  ruby nutek-apple.rb --unattended --install --all"
-    puts "  ruby nutek-apple.rb --unattended --uninstall --attack"
+    puts "  ruby nutek-apple.rb --unattended --uninstall --gui"
     puts "  ruby nutek-apple.rb --unattended --uninstall --all"
-    puts "\nFor more information, see"
-    puts "https://nutek.neosb.net/docs/tools/bing-search/ and TOOLS section where you can find more information about each tool."
+    exit
+  end
+  if args.include?("--license")
+    puts 'LICENSE'
+    puts 'The user is granted a non-exclusive, perpetual license to use,'
+    puts 'and distribute the software, subject to the following terms:'
+    puts 'The user must display the following copyright notice in all copies of the'
+    puts 'software:'
+    puts ''
+    puts 'Copyright (c) 2024 Szymon Błaszczyński'
+    puts ''
+    puts 'The user is not permitted to sublicense the software.'
+    puts 'The user is not permitted to sell the software.'
+    puts ''
+    puts 'The above copyright notice and this permission notice shall be included in all'
+    puts 'copies or substantial portions of the Software.'
+    puts ''
+    puts 'THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR'
+    puts 'IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,'
+    puts 'FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE'
+    puts 'AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER'
+    puts 'LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,'
+    puts 'OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE'
+    puts 'SOFTWARE.'
     exit
   end
   if args.include?("--safari") || args.include?("--web")
-    system("open -a Safari https://nutek.neosb.net/")
+    system("open -a Safari https://nuteksecurity.com/")
     exit
   end
   update(args, github_version)
   if args.include?("--list")
-    puts "Mini:"
-    read_programs($mini)
-    puts "\nAttack:"
-    read_programs($attack)
-    puts "\nCode:"
-    read_programs($code)
-    puts "\nKnowledge:"
-    read_programs($knowledge)
-    puts "\nUtility:"
-    read_programs($utility)
-    puts "\nFor more information, see"
-    puts "https://nutek.neosb.net/docs/tools/bing-search/ and TOOLS section where you can find more information about each tool."
+    puts "cli:"
+    read_programs($cli)
+    puts "\nGUI:"
+    read_programs($gui)
     exit
   end
-  if args.include?("--list-mini")
-    puts "Mini:"
-    read_programs($mini)
-    puts "\nFor more information, see"
-    puts "https://nutek.neosb.net/docs/tools/bing-search/ and TOOLS section where you can find more information about each tool."
+  if args.include?("--list-cli")
+    puts "cli:"
+    read_programs($cli)
     exit
   end
-  if args.include?("--list-attack")
-    puts "Attack:"
-    read_programs($attack)
-    puts "\nFor more information, see"
-    puts "https://nutek.neosb.net/docs/tools/bing-search/ and TOOLS section where you can find more information about each tool."
-    exit
-  end
-  if args.include?("--list-code")
-    puts "Code:"
-    read_programs($code)
-    puts "\nFor more information, see"
-    puts "https://nutek.neosb.net/docs/tools/bing-search/ and TOOLS section where you can find more information about each tool."
-    exit
-  end
-  if args.include?("--list-knowledge")
-    puts "Knowledge:"
-    read_programs($knowledge)
-    puts "\nFor more information, see"
-    puts "https://nutek.neosb.net/docs/tools/bing-search/ and TOOLS section where you can find more information about each tool."
-    exit
-  end
-  if args.include?("--list-utility")
-    puts "Utility:"
-    read_programs($utility)
-    puts "\nFor more information, see"
-    puts "https://nutek.neosb.net/docs/tools/bing-search/ and TOOLS section where you can find more information about each tool."
+  if args.include?("--list-gui")
+    puts "GUI:"
+    read_programs($gui)
     exit
   end
   if args.include?("--uninstall") || args.include?("-u")
@@ -399,37 +290,26 @@ def get_command_line_arguments
     exit false
   end
   if (args.include?("--install") || args.include?("-i")) &&
-    ( !args.include?("--all") && !args.include?("--attack") && 
-    !args.include?("--utility") && !args.include?("--code") && 
-    !args.include?("--knowledge") && !args.include?("--mini"))
-    puts "❌ Error: -i and --install must be used with --all, --attack, --utility, --code, or --knowledge"
+    ( !args.include?("--all") && !args.include?("--gui") &&
+    !args.include?("--cli"))
+    puts "❌ Error: -i and --install must be used with --all, --gui, --cli"
     exit false
   end
   if (args.include?("--uninstall") || args.include?("-u")) &&
-    ( !args.include?("--all") && !args.include?("--attack") &&
-    !args.include?("--utility") && !args.include?("--code") &&
-    !args.include?("--knowledge") && !args.include?("--mini"))
-    puts "❌ Error: -u and --uninstall must be used with --all, --attack, --utility, --code, or --knowledge"
+    ( !args.include?("--all") && !args.include?("--gui") &&
+    !args.include?("--cli"))
+    puts "❌ Error: -u and --uninstall must be used with --all, --gui, --cli"
     exit false
   end
   programs = []
-  if args.include?("--mini")
-    programs += $mini
+  if args.include?("--cli")
+    programs += $cli
   end
-  if args.include?("--attack")
-    programs += $attack
-  end
-  if args.include?("--utility")
-    programs += $utility
-  end
-  if args.include?("--code")
-    programs += $code
-  end
-  if args.include?("--knowledge")
-    programs += $knowledge
+  if args.include?("--gui")
+    programs += $gui
   end
   if args.include?("--all")
-    programs = $attack + $utility + $code + $knowledge + $mini
+    programs = $gui + $cli
     # deduplicate programs
     programs = programs.uniq
   end
@@ -462,7 +342,7 @@ def check_if_homebrew_installed
 end
 
 def main
-  uninstall_argument, programs, 
+  uninstall_argument, programs,
   unattended, dry_run = get_command_line_arguments
   check_if_homebrew_installed
   # progressbar = ProgressBar.new(78)
@@ -481,7 +361,6 @@ def main
         uninstall_program(program, progressbar)
         sleep(0.1)
       end
-      system("osascript -e 'display notification \"Uninstallation complete\" with title \"Nutek Security Platform\" sound name \"Boop\"' duration 1.5")
     else
       puts "Uninstall aborted!"
     end
@@ -499,13 +378,14 @@ def main
         install_program(program, progressbar, dry_run)
         sleep(0.1)
       end
-      puts "\nFor more information, see"
-      puts "https://nutek.neosb.net/docs/tools/bing-search/ and TOOLS section where you can find more information about each tool."
-      system("osascript -e 'display notification \"Installation complete\" with title \"Nutek Security Platform\" sound name \"Boop\"' duration 1.5")
     else
       puts "Install aborted!"
     end
   end
+  puts "\nFor future development and security awarness help me with Monero:"
+  puts "Monero address: 87G8nLBPdwAEPycmWWAhUhZC8kUuuFgjX8zEUw1VjvNMPdkUWzxikocQyLtycwqzJfChR5bNVyXU87m5vT4Fy9gtS6Q5X8L"
+  puts "or Bitcoin:"
+  puts "Bitcoin address: 3AhSZUecGQDk97iCGtUtCq3kqCdndsZEF1"
 end
 
 main
@@ -519,18 +399,3 @@ main
 ####################
 # This script is designed to be run on macOS.
 # This script is tested to run with Ruby 3.2.2 / 2.6.10p210 and Homebrew 4.0.28
-
-####################
-# License
-####################
-# MIT License
-#
-# This script is part of the Nutek Security Platform (https://nutek.neosb.net/) provided by Nutek Security Solutions and Szymon Błaszczyński.
-# You can use this script for free. Please read the license agreement below.
-# If you do not agree to this license, you cannot use this script.
-#
-# MIT License
-# Permission is hereby granted, free of charge, to any person obtaining a copy of this script and associated documentation files (the "Script"), to deal in the Script without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Script, and to permit persons to whom the Script is furnished to do so, subject to the following conditions:
-# The above license notice and this permission notice shall be included in all copies or substantial portions of the Script.
-# THE SCRIPT IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SCRIPT OR THE USE OR OTHER DEALINGS IN THE SCRIPT.
-####################
