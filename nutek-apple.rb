@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+require 'English'
 require 'os'
 
 $gui = %w[
@@ -193,6 +194,25 @@ def lates_version
   raw_varsion.split('/')[2].chomp
 end
 
+def check_version_and_update
+  response = `git pull origin main --rebase`
+  if $CHILD_STATUS.success?
+    if response.include?('error')
+      puts '❌ Error: Could not update from the repository.'
+      exit
+    elsif response.include?('Already up to date.')
+      puts '✅ Already up to date.'
+    else
+      puts '✅ Updated successfully. Please restart the script.'
+      exit
+    end
+  else
+    puts '❌ Error: Git command failed.'
+    puts 'hint: You can try to run the script with --no-update to skip the update check.'
+    exit
+  end
+end
+
 def update(args)
   return if args.include?('--no-update')
 
@@ -201,14 +221,16 @@ def update(args)
   if File.directory?('.git')
     # check if we're in the right repo
     if `git remote get-url origin`.chomp == 'https://github.com/NutekSecurity/nutek-apple.git'
-      system('git pull origin main --rebase') do |output|
-        print output
-      end
+      check_version_and_update
     else
-      puts '❌ Error: Not in the right repo, not updating.'
+      puts '❌ Error: Not in the right git repository, not updating.'
+      puts 'hint: You can try to run the script with --no-update to skip the update check.'
+      exit
     end
   else
-    puts '❌ Error: Not in a git repo, not updating.'
+    puts '❌ Error: Not in a git repoository, not updating.'
+    puts 'hint: You can try to run the script with --no-update to skip the update check.'
+    exit
   end
 end
 
@@ -216,11 +238,11 @@ def get_command_line_arguments
   args = ARGV
   update(args)
   uninstall_argument = false
-  if args.length == 0 || args.include?('--help') || args.include?('-h') ||
+  if args.empty? || args.include?('--help') || args.include?('-h') ||
      (args.length == 1 && args.include?('--no-update'))
     puts 'Usage: ruby nutek-apple.rb [options]'
-    puts "Automated installation of hacking command line programs on macOS - Nutek Security Platform. Requires Homebrew.\nCurated by Nutek Security"
-    puts 'Downloading the latest version from GitHub:'
+    puts "Automated installation of hacking command line programs on macOS (and Linux) - Nutek Security Platform. Requires Homebrew.\nCurated by Nutek Security"
+    puts 'Always keep it updated! Will download the latest version from GitHub automatically:'
     puts 'https://github.com/NutekSecurity/nutek-apple'
     # Always update
     puts "\nOptions:"
@@ -235,7 +257,7 @@ def get_command_line_arguments
     puts "  --list-cli\t\t\t\tList cli set of programs"
     puts "  --list-gui\t\t\t\tList gui programs"
     puts "  --unattended\t\t\t\tUnattended mode. Install selected programs without asking for confirmation (on Linux run with sudo)"
-    puts "  --dry-run\t\t\t\tDry run. Show what would be installed without actually installing anything"
+    puts "  --dry-run\t\t\t\tDry run. Show what would be installed without actually installing anything and try to install without installing anything"
     puts "\nExamples:"
     puts '  ruby nutek-apple.rb --install --cli'
     puts '  ruby nutek-apple.rb --install --gui'
@@ -433,3 +455,13 @@ main
 # Notes
 ####################
 # This script is designed to be run on macOS, but as well may work on Linux.
+# First run the script with --dry-run to see what would be installed, and to check if the script works on your system.
+# Then run the script without --dry-run to install the programs.
+# If you encounter any issues, please report them on GitHub:
+# https://github.com/NutekSecurity/nutek-apple/issues
+# Thank you for using Nutek Security Platform!
+# https://nuteksecurity.com/
+####################
+# End of Notes
+# End of nutek-apple.rb
+####################
