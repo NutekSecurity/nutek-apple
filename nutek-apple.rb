@@ -37,6 +37,7 @@ $cli = %w[
   ffuf
   nuclei
   mitmproxy
+  metasploit
   httpx
   amass
   jq
