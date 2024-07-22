@@ -9,7 +9,6 @@ $gui = %w[
   warp
   alacritty
   wireshark
-  zui
   font-hack-nerd-font
 ]
 
