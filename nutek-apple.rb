@@ -220,7 +220,7 @@ def update(args)
   # check if we're in a git repo
   if File.directory?('.git')
     # check if we're in the right repo
-    if `git remote get-url origin`.chomp == 'https://github.com/NutekSecurity/nutek-apple.git'
+    if `git remote get-url origin`.chomp == 'https://github.com/NutekSecurity/nutek-apple.git' || `git remote get-url upstream`.chomp == 'https://github.com/NutekSecurity/nutek-apple.git'
       check_version_and_update
     else
       puts '❌ Error: Not in the right git repository, not updating.'
