@@ -35,6 +35,7 @@ def install_program(program, progressbar, dry_run)
             end
   if program == 'font-hack-nerd-font' && OS.linux?
     puts "'❌ Error: not available for Linux"
+  end
   if program == 'podman-desktop' && OS.linux?
     if dry_run == '--dry-run'
       puts "✅ #{program} installed!"
