@@ -28,16 +28,22 @@ def install_program(program, progressbar, dry_run)
     puts "✅ #{program} already installed!"
     return
   end
-  if (program == 'podman-desktop') && OS.linux?
-    get_yes_no_input "❌ Error: #{program.chomp} is not available on in Homebrew for Linux. Try with Flatpak? (yes/no): "
-    return
-  end
   dry_run = if dry_run
               '--dry-run'
             else
               ''
             end
-  if %w[metasploit mitmproxy].include?(program)
+  if program == 'font-hack-nerd-font' && OS.linux?
+    puts "'❌ Error: not available for Linux"
+  if program == 'podman-desktop' && OS.linux?
+    if dry_run == '--dry-run'
+      puts "✅ #{program} installed!"
+      return
+    end
+    `flatpak install flathub io.podman_desktop.PodmanDesktop`
+    puts "✅ #{program.chomp} installed!"
+  end
+    if %w[metasploit mitmproxy].include?(program)
     # No longer necessary
     # system('brew tap homebrew/cask') do |output|
     #   print output
@@ -200,13 +206,16 @@ end
 
 def get_command_line_arguments
   args = ARGV
-  update(args)
+  unless args.empty?
+    update(args)
+  end
   uninstall_argument = false
   if args.empty? || args.include?('--help') || args.include?('-h') ||
      (args.length == 1 && args.include?('--no-update'))
     puts 'Usage: ruby nutek-apple.rb [options]'
-    puts "Automated installation of hacking command line programs on macOS (and Linux) - Nutek Security Platform. Requires Homebrew.\nCurated by Nutek Security"
-    puts 'Always keep it updated! Will download the latest version from GitHub automatically:'
+    puts ''
+    puts "Automated installation of hacking command line (and few GUI) programs on macOS (and Linux) - Nutek Security Platform. Requires Homebrew (also available for Linux).\nCurated by Nutek Security"
+    puts 'Auto-update enable, just run the script from the repository directory.\nWill download the latest version from GitHub automatically:'
     puts 'https://github.com/NutekSecurity/nutek-apple'
     # Always update
     puts "\nOptions:"

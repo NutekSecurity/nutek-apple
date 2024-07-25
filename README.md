@@ -1,4 +1,4 @@
-# nutek-apple
+# nutek-apple 🍎
 
 Nutek Security Platform for macOS and Linux operating systems. Tools for hackers, bug hunters and hobbiests. You might like it, you might not. It's a matter of taste.
 
@@ -7,7 +7,7 @@ Nutek Security Platform for macOS and Linux operating systems. Tools for hackers
 This - `nutek-apple.rb` - script for macOS and Linux operating systems installs
 all the neccessairly tools for well prepared hacker, bug hunter or
 a seasoned hobbiest willing to pursue a way of turning things inside out and
-is not scared to use only command line tools. Why? Almost all of the fancy
+is not scared to use only command line tools with . Why? Almost all of the fancy
 GUI (don't there are some of them) apps started as a command line tool, or are
 in many ways similar, or even less capable, because in command line - you're
 on top, you're left alone like Alice in Wonderland deep inside your dreams of power, and you know what? You can have this power! Just follow along.
