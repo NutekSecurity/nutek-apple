@@ -44,9 +44,9 @@ def install_program(program, progressbar, dry_run)
     # end
     if OS.linux? && program == 'mitmproxy' and dry_run == ''
       `mkdir ~/mitmproxy`
-      `curl -O -L https://downloads.mitmproxy.org/10.3.0/mitmproxy-10.3.0-linux-x86_64.tar.gz`
-      `tar -xzf mitmproxy-10.3.0-linux-x86_64.tar.gz -C ~/mitmproxy`
-      `rm mitmproxy-10.3.0-linux-x86_64.tar.gz`
+      `curl -O -L https://downloads.mitmproxy.org/10.4.0/mitmproxy-10.4.0-linux-x86_64.tar.gz`
+      `tar -xzf mitmproxy-10.4.0-linux-x86_64.tar.gz -C ~/mitmproxy`
+      `rm mitmproxy-10.4.0-linux-x86_64.tar.gz`
       puts "✅ #{program.chomp} installed!"
       puts 'To run, run `ls ~/mitmproxy` and chose your way.'
       return
@@ -55,8 +55,9 @@ def install_program(program, progressbar, dry_run)
       return
     end
     if program == 'metasploit' && OS.linux? and dry_run == ''
-      puts "❌ Error: #{program.chomp} is not available on in Homebrew for Linux. Nor with Flatpak. Try installing manually."
-      return
+      `curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > msfinstall && \
+  chmod 755 msfinstall && \
+  ./msfinstall`
     elsif program == 'metasploit' && OS.linux? and dry_run == '--dry-run'
       puts "✅ #{program.chomp} installed!"
     end
@@ -107,6 +108,20 @@ def install_program(program, progressbar, dry_run)
     end
   elsif program == 'warp' && OS.linux?
     puts '❌ Error: Download Warp from https://www.warp.dev/ and install manually using dpkg (.deb) or dnf (.rpm).'
+  elsif program == 'zed' && OS.linux?
+    if dry_run == '--dry-run'
+      puts "✅ #{program} installed!"
+      return
+    end
+    `curl -f https://zed.dev/install.sh | sh`
+    puts "✅ #{program} installed!"
+  elsif program == 'ollama' && OS.linux?
+    if dry_run == '--dry-run'
+      puts "✅ #{program} installed!"
+      return
+    end
+    `curl -fsSL https://ollama.com/install.sh | sh`
+    puts "✅ #{program} installed!"
   else
     system("brew install #{dry_run} #{program.chomp}") do |output|
       print output
@@ -386,10 +401,12 @@ def main
       puts 'Install aborted!'
     end
   end
-  puts "\nFor future development and security awarness you can help me with Bitcoin:"
+  puts "\n Thank you for using nutek-apple 🍎 - the most important tools in hacker's backpack"
+  puts "For future development and security awarness you can help me with Bitcoin:"
   puts 'Bitcoin address: 3AhSZUecGQDk97iCGtUtCq3kqCdndsZEF1'
   puts ''
   puts 'https://nuteksecurity.com/'
+  puts 'neosb@nuteksecurity.com'
 end
 
 main
