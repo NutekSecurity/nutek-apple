@@ -12,6 +12,9 @@ GUI (don't there are some of them) apps started as a command line tool, or are
 in many ways similar, or even less capable, because in command line - you're
 on top, you're left alone like Alice in Wonderland deep inside your dreams of power, and you know what? You can have this power! Just follow along.
 
+
+The only exceptions for this are text editors, terminals and Wireshark (try termshark in CLI).
+
 ## Installation
 
 1. Install Homebrew
@@ -20,7 +23,7 @@ on top, you're left alone like Alice in Wonderland deep inside your dreams of po
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-2. Clone this repository 
+2. Clone this repository
 
 ```bash
 git clone https://github.com/NutekSecurity/nutek-apple.git
@@ -46,6 +49,10 @@ sudo dnf install ruby
 ```
 
 4. You're on start line. Run this command:
+
+```shell
+bundle install --without development,test
+```
 
 ```shell
 ruby nutek-apple.rb
@@ -145,7 +152,7 @@ podman-desktop - docker alternative
 imhex - hex editor
 warp - terminal
 alacritty - terminal
+kitty - terminal
 wireshark - network analyzer
-zui - data mangling
 font-hack-nerd-font - font
 ```

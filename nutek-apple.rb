@@ -1,59 +1,11 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
-require 'English'
 require 'os'
 
-$gui = %w[
-  podman-desktop
-  imhex
-  warp
-  alacritty
-  wireshark
-  font-hack-nerd-font
-]
-
-$cli = %w[
-  podman
-  neovim
-  openvpn
-  irssi
-  dos2unix
-  ipcalc
-  whatmask
-  expect
-  fd
-  tmux
-  lsd
-  bat
-  ripgrep-all
-  sd
-  termshark
-  httpie
-  smap
-  nmap
-  p0f
-  masscan
-  feroxbuster
-  ffuf
-  nuclei
-  mitmproxy
-  metasploit
-  httpx
-  amass
-  jq
-  htmlq
-  httrack
-  monolith
-  mdcat
-  ouch
-  exploitdb
-  asciinema
-  agg
-  hashcat
-  john-jumbo
-  mdbook
-
-]
+require_relative 'cli'
+require_relative 'gui'
+require_relative 'input'
 
 def load_programs(file_name)
   programs = []
@@ -77,7 +29,7 @@ def install_program(program, progressbar, dry_run)
     return
   end
   if (program == 'podman-desktop') && OS.linux?
-    puts "❌ Error: #{program.chomp} is not available on in Homebrew for Linux. Try another package manager or install manually."
+    get_yes_no_input "❌ Error: #{program.chomp} is not available on in Homebrew for Linux. Try with Flatpak? (yes/no): "
     return
   end
   dry_run = if dry_run
@@ -96,12 +48,18 @@ def install_program(program, progressbar, dry_run)
       `tar -xzf mitmproxy-10.3.0-linux-x86_64.tar.gz -C ~/mitmproxy`
       `rm mitmproxy-10.3.0-linux-x86_64.tar.gz`
       puts "✅ #{program.chomp} installed!"
+      puts 'To run, run `ls ~/mitmproxy` and chose your way.'
       return
     elsif OS.linux? && program == 'mitmproxy' and dry_run == '--dry-run'
-      puts '✅ mitmproxy installed!'
+      puts "✅ #{program.chomp} installed!"
       return
     end
-    return if program == 'metasploit' && OS.linux?
+    if program == 'metasploit' && OS.linux? and dry_run == ''
+      puts "❌ Error: #{program.chomp} is not available on in Homebrew for Linux. Nor with Flatpak. Try installing manually."
+      return
+    elsif program == 'metasploit' && OS.linux? and dry_run == '--dry-run'
+      puts "✅ #{program.chomp} installed!"
+    end
 
     system("brew install #{dry_run} --cask #{program.chomp}") do |output|
       print output
@@ -178,15 +136,6 @@ def uninstall_program(program, progressbar)
     end
   end
   puts "✅ #{program.chomp} uninstalled!"
-end
-
-def get_yes_no_input(prompt)
-  print prompt
-  answer = $stdin.gets
-  answer = answer.chomp.downcase
-  return true if %w[yes y].include?(answer)
-
-  false
 end
 
 def lates_version
@@ -437,9 +386,7 @@ def main
       puts 'Install aborted!'
     end
   end
-  puts "\nFor future development and security awarness help me with Monero:"
-  puts 'Monero address: 87G8nLBPdwAEPycmWWAhUhZC8kUuuFgjX8zEUw1VjvNMPdkUWzxikocQyLtycwqzJfChR5bNVyXU87m5vT4Fy9gtS6Q5X8L'
-  puts 'or Bitcoin:'
+  puts "\nFor future development and security awarness you can help me with Bitcoin:"
   puts 'Bitcoin address: 3AhSZUecGQDk97iCGtUtCq3kqCdndsZEF1'
   puts ''
   puts 'https://nuteksecurity.com/'
