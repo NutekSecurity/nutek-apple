@@ -165,7 +165,7 @@ end
 
 def check_version_and_update
   response = `git pull origin main --rebase`
-  if $CHILD_STATUS.success?
+  if !$CHILD_STATUS.nil? && $CHILD_STATUS.success?
     if response.include?('error')
       puts '❌ Error: Could not update from the repository.'
       exit
@@ -205,13 +205,18 @@ end
 
 def get_command_line_arguments
   args = ARGV
+  unless args.nil? 
+    update(args)
+  else
+    update([])
+  end
   uninstall_argument = false
   if args.empty? || args.include?('--help') || args.include?('-h') ||
      (args.length == 1 && args.include?('--no-update'))
     puts 'Usage: ruby nutek-apple.rb [options]'
     puts ''
     puts "Automated installation of hacking command line (and few GUI) programs on macOS (and Linux) - Nutek Security Platform. Requires Homebrew (also available for Linux).\nCurated by Nutek Security"
-    puts 'Auto-update enable, just run the script from the repository directory.\nWill download the latest version from GitHub automatically:'
+    puts "Auto-update enabled, just run the script from the repository directory.\nWill download the latest version from GitHub automatically:"
     puts 'https://github.com/NutekSecurity/nutek-apple'
     # Always update
     puts "\nOptions:"
