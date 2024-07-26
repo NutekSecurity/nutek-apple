@@ -105,6 +105,7 @@ Examples:
 ## What you will get?
 
 ```text
+ollama - run LLM locally
 podman - docker alternative
 neovim - text editor
 openvpn - vpn client
@@ -129,6 +130,7 @@ feroxbuster - directory bruteforcer
 ffuf - directory bruteforcer
 nuclei - vulnerability scanner
 mitmproxy - transparent proxy
+metasploit - red team toolbox
 httpx - http scanner
 amass - subdomain scanner
 jq - json parser
@@ -155,4 +157,6 @@ alacritty - terminal
 kitty - terminal
 wireshark - network analyzer
 font-hack-nerd-font - font
+zed - text editor
+vscodium - text editor
 ```

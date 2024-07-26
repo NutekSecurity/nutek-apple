@@ -33,9 +33,7 @@ def install_program(program, progressbar, dry_run)
             else
               ''
             end
-  if program == 'font-hack-nerd-font' && OS.linux?
-    puts "'❌ Error: not available for Linux"
-  end
+  puts "'❌ Error: not available for Linux" if program == 'font-hack-nerd-font' && OS.linux?
   if program == 'podman-desktop' && OS.linux?
     if dry_run == '--dry-run'
       puts "✅ #{program} installed!"
@@ -44,7 +42,7 @@ def install_program(program, progressbar, dry_run)
     `flatpak install flathub io.podman_desktop.PodmanDesktop`
     puts "✅ #{program.chomp} installed!"
   end
-    if %w[metasploit mitmproxy].include?(program)
+  if %w[metasploit mitmproxy].include?(program)
     # No longer necessary
     # system('brew tap homebrew/cask') do |output|
     #   print output
@@ -207,9 +205,6 @@ end
 
 def get_command_line_arguments
   args = ARGV
-  unless args.empty?
-    update(args)
-  end
   uninstall_argument = false
   if args.empty? || args.include?('--help') || args.include?('-h') ||
      (args.length == 1 && args.include?('--no-update'))
@@ -270,21 +265,21 @@ def get_command_line_arguments
     puts 'SOFTWARE.'
     exit
   end
-  if args.include?('--list')
-    puts 'cli:'
-    read_programs($cli)
-    puts "\nGUI:"
-    read_programs($gui)
+  if args.include?('--list-all')
+    puts 'Command Line Interface (terminal):'
+    read_programs(cli)
+    puts "\nGraphical User Interface (desktop):"
+    read_programs(gui)
     exit
   end
-  if args.include?('--list-cli')
-    puts 'cli:'
-    read_programs($cli)
+  if args.include?('--list') && args.include?('--cli')
+    puts 'Command Line Interface (terminal):'
+    read_programs(cli)
     exit
   end
-  if args.include?('--list-gui')
-    puts 'GUI:'
-    read_programs($gui)
+  if args.include?('--list') && args.include?('--gui')
+    puts 'Graphical User Interface (desktop):'
+    read_programs(gui)
     exit
   end
   uninstall_argument = true if args.include?('--uninstall') || args.include?('-u')
@@ -335,10 +330,10 @@ def get_command_line_arguments
     exit false
   end
   programs = []
-  programs += $cli if args.include?('--cli')
-  programs += $gui if args.include?('--gui')
+  programs += cli if args.include?('--cli')
+  programs += gui if args.include?('--gui')
   if args.include?('--all')
-    programs = $gui + $cli
+    programs = gui + cli
     # deduplicate programs
     programs = programs.uniq
   end
@@ -412,7 +407,7 @@ def main
     end
   end
   puts "\n Thank you for using nutek-apple 🍎 - the most important tools in hacker's backpack"
-  puts "For future development and security awarness you can help me with Bitcoin:"
+  puts 'For future development and security awarness you can help me with Bitcoin:'
   puts 'Bitcoin address: 3AhSZUecGQDk97iCGtUtCq3kqCdndsZEF1'
   puts ''
   puts 'https://nuteksecurity.com/'
