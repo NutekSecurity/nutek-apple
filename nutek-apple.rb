@@ -33,7 +33,10 @@ def install_program(program, progressbar, dry_run)
             else
               ''
             end
-  puts "'❌ Error: not available for Linux" if program == 'font-hack-nerd-font' && OS.linux?
+  if program == 'font-hack-nerd-font' && OS.linux?
+    puts "'❌ Error: not available for Linux" 
+    return
+  end
   if program == 'podman-desktop' && OS.linux?
     if dry_run == '--dry-run'
       puts "✅ #{program} installed!"
@@ -91,7 +94,7 @@ def install_program(program, progressbar, dry_run)
     end
     puts "✅ #{program.chomp} installed!"
     nil
-  elsif %w[alacritty imhex].include?(program) && OS.linux?
+  elsif %w[alacritty imhex kitty].include?(program) && OS.linux?
     if dry_run == '--dry-run'
       puts "✅ #{program} installed!"
       return
