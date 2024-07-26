@@ -407,8 +407,6 @@ def main
     end
   end
   puts "\n Thank you for using nutek-apple 🍎 - the most important tools in hacker's backpack"
-  puts 'For future development and security awarness you can help me with Bitcoin:'
-  puts 'Bitcoin address: 3AhSZUecGQDk97iCGtUtCq3kqCdndsZEF1'
   puts ''
   puts 'https://nuteksecurity.com/'
   puts 'neosb@nuteksecurity.com'
