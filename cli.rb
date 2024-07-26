@@ -39,8 +39,9 @@ def cli
     exploitdb
     asciinema
     agg
-    hashcat
     john-jumbo
     mdbook
   ]
 end
+
+# hashcat

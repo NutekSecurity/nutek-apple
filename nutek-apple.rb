@@ -62,6 +62,7 @@ def install_program(program, progressbar, dry_run)
       `curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > msfinstall && \
   chmod 755 msfinstall && \
   ./msfinstall`
+      `rm msfinstall`
     elsif program == 'metasploit' && OS.linux? and dry_run == '--dry-run'
       puts "✅ #{program.chomp} installed!"
       return
