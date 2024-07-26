@@ -45,11 +45,7 @@ def install_program(program, progressbar, dry_run)
     `flatpak install flathub io.podman_desktop.PodmanDesktop`
     puts "✅ #{program.chomp} installed!"
   end
-  if %w[metasploit mitmproxy].include?(program)
-    # No longer necessary
-    # system('brew tap homebrew/cask') do |output|
-    #   print output
-    # end
+  if %w[mitmproxy metasploit].include?(program)
     if OS.linux? && program == 'mitmproxy' and dry_run == ''
       `mkdir ~/mitmproxy`
       `curl -O -L https://downloads.mitmproxy.org/10.4.0/mitmproxy-10.4.0-linux-x86_64.tar.gz`
@@ -68,10 +64,7 @@ def install_program(program, progressbar, dry_run)
   ./msfinstall`
     elsif program == 'metasploit' && OS.linux? and dry_run == '--dry-run'
       puts "✅ #{program.chomp} installed!"
-    end
-
-    system("brew install #{dry_run} --cask #{program.chomp}") do |output|
-      print output
+      return
     end
     puts "✅ #{program.chomp} installed!"
     return
@@ -94,7 +87,7 @@ def install_program(program, progressbar, dry_run)
     end
     puts "✅ #{program.chomp} installed!"
     nil
-  elsif %w[alacritty imhex kitty].include?(program) && OS.linux?
+  elsif %w[alacritty imhex kitty wireshark nmap openvpn neovim].include?(program) && OS.linux?
     if dry_run == '--dry-run'
       puts "✅ #{program} installed!"
       return
@@ -241,7 +234,6 @@ def get_command_line_arguments
     puts "  --list\t\t\t\tList all programs"
     puts "  --list-cli\t\t\t\tList cli set of programs"
     puts "  --list-gui\t\t\t\tList gui programs"
-    puts "  --unattended\t\t\t\tUnattended mode. Install selected programs without asking for confirmation (on Linux run with sudo)"
     puts "  --dry-run\t\t\t\tDry run. Show what would be installed without actually installing anything and try to install without installing anything"
     puts "\nExamples:"
     puts '  ruby nutek-apple.rb --install --cli'
@@ -249,12 +241,8 @@ def get_command_line_arguments
     puts '  ruby nutek-apple.rb --install --all'
     puts '  ruby nutek-apple.rb --uninstall --gui'
     puts '  ruby nutek-apple.rb --uninstall --all'
-    puts '  ruby nutek-apple.rb --list'
-    puts '  ruby nutek-apple.rb --list-gui'
-    puts '  ruby nutek-apple.rb --unattended --install --gui'
-    puts '  ruby nutek-apple.rb --unattended --install --all'
-    puts '  ruby nutek-apple.rb --unattended --uninstall --gui'
-    puts '  ruby nutek-apple.rb --unattended --uninstall --all'
+    puts '  ruby nutek-apple.rb --list-all'
+    puts '  ruby nutek-apple.rb --list --gui'
     exit
   end
   if args.include?('--license')
@@ -353,11 +341,7 @@ def get_command_line_arguments
     # deduplicate programs
     programs = programs.uniq
   end
-  unattended = if args.include?('--unattended')
-                 true
-               else
-                 false
-               end
+  unattended = false
   dry_run = if args.include?('--dry-run')
               true
             else
