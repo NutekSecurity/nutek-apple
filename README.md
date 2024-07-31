@@ -190,3 +190,14 @@ zed - text editor
 vscodium - text editor
 firefox - web browser
 ```
+
+## TODO
+
+* ⚠️ export git auto-update to Ruby gem
+* ⚠️ add install and uninstall for one program
+* ⚠️ make user able to read Homebrew information about a particular program; thin wrapper-like around Homebrew - not to deep, just basic install, uninstall and info
+* ⚠️ keep user in my app, so no info is leaked to Homebrew and back.
+* ⚠️ add programming languages (rust, ruby - (how? maybe with an installation script?), python, dotnet (C#?, powershell?), go...) to list of available programs
+* ⚠️ add nutek-cipher
+* ⚠️ make a proposal for katarina to gather around Zed text editor and collaborate
+* ⚠️ write about each program in my book - _Hacking with a DREAM in the mind_
