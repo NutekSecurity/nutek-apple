@@ -162,6 +162,7 @@ end
 
 def check_version_and_update
   response = `git status`
+  if response.include? 'up to date' return
   if response.include? 'ahead'
     puts 'hint: You can run the script with --no-update to skip the update check.'
     on_your_own = get_yes_no_input "You're working on your own version of nutek-apple 🍎 Do you want to continue? (yes/no): "
