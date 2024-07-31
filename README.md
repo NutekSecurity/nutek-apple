@@ -119,6 +119,16 @@ chmod 744 nutek-apple.rb
 ./nutek-apple.rb
 ```
 
+## If you are stuck, and can't run the script
+
+call the git pull command:
+
+```bash
+git pull origin main --rebase
+```
+
+This will let you incorporate any changes you've made.
+
 ## What you will get?
 
 ```text
