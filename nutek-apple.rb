@@ -182,7 +182,6 @@ def check_version_and_update
   elsif response.include?('Updating ')
     puts '✅ Updated successfully. Please restart the script.'
     exit
-    end
   else
     puts '❌ Error: Git command failed.'
     puts 'hint: You can run the script with --no-update to skip the update check.'
