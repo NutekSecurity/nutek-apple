@@ -17,11 +17,17 @@ The only exceptions for this are text editors, terminals and Wireshark (try term
 
 ## Installation
 
+### Homebrew
+
 1. Install Homebrew
 
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
+
+or look it up on [brew.sh](https://brew.sh)
+
+### nutek-apple repository
 
 2. Clone this repository
 
@@ -30,6 +36,8 @@ git clone https://github.com/NutekSecurity/nutek-apple.git
 ```
 
 to some safe location on your Apple/PC computer. Make sure you have Ruby installed, and also Homebrew (that's from where we'll be fetching apps) - you can get Homebrew from [brew.sh](https://brew.sh).
+
+### Ruby programming lanuguage
 
 3. You should already have Ruby installed on your computer, but if you don't, you can install it with Homebrew:
 
@@ -48,10 +56,56 @@ on Fedora:
 sudo dnf install ruby
 ```
 
-4. You're on start line. Run this command:
+#### Ruby version manager rbenv
+
+* 3.1. You can also use ruby version manager like `rbenv` _(I use it)_ to seamlessly change between versions of ruby with
+`rbenv` command, or `.ruby-version` file
+
+macOS, Linux (with Homebrew installed):
 
 ```shell
-bundle install --without development,test
+brew install rbenv
+```
+
+Debian based Linux:
+
+```shell
+sudo apt install rbenv
+```
+
+Red Hat based Linux:
+
+```shell
+sudo dnef install rbenv
+```
+
+and then use something along this lines, one by one
+
+```shell
+rbenv init
+rbenv install --list
+rbenv install 3.3.4
+rbenv rehash
+rbenv local 3.3.4
+```
+
+It first initialize rbenv, shows ruby versions to intall, install the long term support one, initialize it and set local
+for this app.
+
+After installing Ruby from rbenv, _restart your terminal_ and proceed to my nutek-apple specifics.
+
+To check what ruby version is used:
+
+```shell
+ruby --version
+```
+
+### nutek-apple first run
+
+4. You're on the start line. Run this command:
+
+```shell
+bundle install
 ```
 
 ```shell
@@ -63,43 +117,6 @@ or make this happen:
 ```shell
 chmod 744 nutek-apple.rb
 ./nutek-apple.rb
-```
-
-This should present you with help message, and there you will find everything you need, but in case of clarity, I provide the transcript.
-
-```text
-Usage: ruby nutek-apple.rb [options]
-Automated installation of hacking command line programs on macOS - Nutek Security Platform. Requires Homebrew.
-Curated by Nutek Security
-Downloading the latest version from GitHub:
-https://github.com/NutekSecurity/nutek-apple
-
-Options:
-  -h, --help				Show this help message and exit
-  -i, --install				Install programs. Choose programs to install with --gui, --cli or --all
-  -u, --uninstall			Uninstall programs. Choose programs to uninstall with --gui, --cli or --all
-  --license				Show license information
-  --all					Install or uninstall all programs
-  --cli				Install or uninstall cli set of programs
-  --gui				Install or uninstall GUI programs
-  --list				List all programs
-  --list-cli				List cli set of programs
-  --list-gui				List gui programs
-  --unattended				Unattended mode. Install selected programs without asking for confirmation (on Linux run with sudo)
-  --dry-run				Dry run. Show what would be installed without actually installing anything
-
-Examples:
-  ruby nutek-apple.rb --install --cli
-  ruby nutek-apple.rb --install --gui
-  ruby nutek-apple.rb --install --all
-  ruby nutek-apple.rb --uninstall --gui
-  ruby nutek-apple.rb --uninstall --all
-  ruby nutek-apple.rb --list
-  ruby nutek-apple.rb --list-gui
-  ruby nutek-apple.rb --unattended --install --gui
-  ruby nutek-apple.rb --unattended --install --all
-  ruby nutek-apple.rb --unattended --uninstall --gui
-  ruby nutek-apple.rb --unattended --uninstall --all
 ```
 
 ## What you will get?
