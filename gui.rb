@@ -12,5 +12,6 @@ def gui
     zed
     firefox
     vscodium
+    zap
   ]
 end
