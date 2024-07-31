@@ -176,4 +176,5 @@ wireshark - network analyzer
 font-hack-nerd-font - font
 zed - text editor
 vscodium - text editor
+firefox - web browser
 ```
