@@ -173,15 +173,15 @@ def check_version_and_update
   end
   response = `git pull origin main --rebase`
   puts response
-  if !$CHILD_STATUS.nil? && $CHILD_STATUS.success?
-    if response.include?('error')
-      puts '❌ Error: Could not update from the repository.'
-      exit
-    elsif response.include?('Already up to date.')
+  if response.include?('error')
+    puts '❌ Error: Could not update from the repository.'
+    puts 'hint: You can run the script with --no-update to skip the update check.'
+    exit
+  elsif response.include?('Already up to date.')
       puts '✅ Already up to date.'
-    else
-      puts '✅ Updated successfully. Please restart the script.'
-      exit
+  elsif response.include?('Updating ')
+    puts '✅ Updated successfully. Please restart the script.'
+    exit
     end
   else
     puts '❌ Error: Git command failed.'
