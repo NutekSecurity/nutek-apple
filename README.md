@@ -195,7 +195,7 @@ firefox - web browser
 
 * ⚠️ export git auto-update to Ruby gem
 * ⚠️ add install and uninstall for one program
-* ⚠️ make user able to read Homebrew information about a particular program; thin wrapper-like around Homebrew - not to deep, just basic install, uninstall and info
+* ⚠️ make user able to read Homebrew information about a particular program; thin wrapper-like around Homebrew - not to deep, just basic install, uninstall and info, also very important, __update__
 * ⚠️ keep user in my app, so no info is leaked to Homebrew and back.
 * ⚠️ add programming languages (rust, ruby - (how? maybe with an installation script?), python, dotnet (C#?, powershell?), go...) to list of available programs
 * ⚠️ add nutek-cipher and nutek-smoke
