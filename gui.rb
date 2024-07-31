@@ -10,5 +10,7 @@ def gui
     wireshark
     font-hack-nerd-font
     zed
+    firefox
+    vscodium
   ]
 end
