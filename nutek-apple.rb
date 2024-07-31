@@ -161,21 +161,18 @@ def lates_version
 end
 
 def check_version_and_update
-  response = `git status`
-  return if response.include? 'up to date'
-  if response.include? 'ahead'
-    puts 'hint: You can run the script with --no-update to skip the update check.'
-    on_your_own = get_yes_no_input "You're working on your own version of nutek-apple 🍎 Do you want to continue? (yes/no): "
-    return if on_your_own
-
-    puts 'Exit'
-    exit
-  end
   response = `git pull origin main --rebase`
   puts response
   if response.include?('error')
     puts '❌ Error: Could not update from the repository.'
     puts 'hint: You can run the script with --no-update to skip the update check.'
+    exit
+  elsif response.include? 'ahead'
+    puts 'hint: You can run the script with --no-update to skip the update check.'
+    on_your_own = get_yes_no_input "You're working on your own version of nutek-apple 🍎 Do you want to continue? (yes/no): "
+    return if on_your_own
+
+    puts 'Exit'
     exit
   elsif response.include?('Already up to date.')
       puts '✅ Already up to date.'
