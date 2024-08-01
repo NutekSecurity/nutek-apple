@@ -133,6 +133,11 @@ def install_program(program, progressbar, dry_run)
 end
 
 def uninstall_program(program, progressbar)
+  dry_run = if dry_run
+              '--dry-run'
+            else
+              ''
+            end
   if program == 'mitmproxy' && OS.linux?
     # Check if the directory exists and remove it
     `rm -rf ~/mitmproxy` if File.directory?('~/mitmproxy')
