@@ -202,3 +202,4 @@ zap - web app scanner
 * ⚠️ add nutek-cipher and nutek-smoke
 * ⚠️ make a proposal for katarina to gather around Zed text editor and collaborate
 * ⚠️ write about each program in my book - _Hacking with a DREAM in the mind_
+* ⚠️ add test that check if software is installed, and other cli commands
