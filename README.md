@@ -133,6 +133,8 @@ This will let you incorporate any changes you've made.
 
 ## What you will get?
 
+6GB worth of loot, including:
+
 ```text
 ollama - run LLM locally
 podman - docker alternative
