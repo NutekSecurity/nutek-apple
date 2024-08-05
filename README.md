@@ -4,24 +4,28 @@
 
 Nutek Security Platform for macOS and Linux operating systems. Tools for hackers, bug hunters and hobbiests. You might like it, you might not. It's a matter of taste.
 
-## What it does?
+## What it do?
 
-This - `nutek-apple.rb` - script for macOS and Linux operating systems installs
-all the neccessairly tools for well prepared hacker, bug hunter or
-a seasoned hobbiest willing to pursue a way of turning things inside out and
+This - part of `Nutek Security Platform` - program for _macOS_ and _Linux_ operating systems installs all the neccessairly _tools_ for well prepared 
+_hacker_, _bug hunter_ or
+a seasoned _hobbiest_ willing to pursue a way of turning things inside out and
 is not scared to use only command line tools with . Why? Almost all of the fancy
-GUI (don't there are some of them) apps started as a command line tool, or are
+GUI apps started as a command line tool, or are
 in many ways similar, or even less capable, because in command line - you're
-on top, you're left alone like Alice in Wonderland deep inside your dreams of power, and you know what? You can have this power! Just follow along.
+on the top, you're left alone like _Alice in Wonderland_ deep inside your dreams of power, and you know what? You can have this power! Just follow along.
+
+If you look for some other help in hacking, pentesting or else, there are
+links to other parts of Internet, that when you instal Firefox, or have
+been using Safari, will open in browser window...
 
 
-The only exceptions for this are text editors, terminals and Wireshark (try termshark in CLI).
+The only exceptions for the CLI rule are text editors (NeoVim in CLI), terminals and Wireshark (try termshark in CLI).
 
 ## Installation
 
 ### Homebrew
 
-1. Install Homebrew
+1. Install Homebrew (dependency for most mmacOS packages and some Linux too)
 
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -29,77 +33,24 @@ The only exceptions for this are text editors, terminals and Wireshark (try term
 
 or look it up on [brew.sh](https://brew.sh)
 
-### nutek-apple repository
+2. Install Go programming language
 
-2. Clone this repository
-
-```bash
-git clone https://github.com/NutekSecurity/nutek-apple.git
-```
-
-to some safe location on your Apple/PC computer. Make sure you have Ruby installed, and also Homebrew (that's from where we'll be fetching apps) - you can get Homebrew from [brew.sh](https://brew.sh).
-
-### Ruby programming lanuguage
-
-3. You should already have Ruby installed on your computer, but if you don't, you can install it with Homebrew:
+You may use your Homebrew
 
 ```bash
-brew install ruby
+brew install go
 ```
 
-on Linux, you can install Ruby with your package manager, for example on Ubuntu:
+or directly from upstream on the official Go language webpage
+
+[https://go.dev/dl/](https://go.dev/dl/)
+
+### nutek-apple installation using go or latest binaries
+
+Use Go or download [latest builds](https://github.com/nuteksecurity/nutek-apple/releases/)
 
 ```bash
-sudo apt install ruby
-```
-on Fedora:
-
-```bash
-sudo dnf install ruby
-```
-
-#### Ruby version manager rbenv
-
-* 3.1. You can also use ruby version manager like `rbenv` _(I use it)_ to seamlessly change between versions of ruby with
-`rbenv` command, or `.ruby-version` file
-
-macOS, Linux (with Homebrew installed):
-
-```shell
-brew install rbenv
-```
-
-Debian based Linux:
-
-```shell
-sudo apt install rbenv
-```
-
-Red Hat based Linux:
-
-```shell
-sudo dnef install rbenv
-```
-
-and then use something along this lines, one by one
-
-```shell
-rbenv init
-rbenv install --list
-rbenv install 3.3.4
-rbenv rehash
-rbenv local 3.3.4
-```
-
-It first initialize rbenv, shows ruby versions to intall, install the long term support one, initialize it and set local
-for this app.
-
-After installing Ruby from rbenv, _restart your terminal_ and proceed to my nutek-apple specifics.
-
-To check what ruby version is used:
-
-```shell
-ruby --version
+go install -v github.com/nuteksecurity/nutek-apple@latest
 ```
 
 ### nutek-apple first run
@@ -152,6 +103,7 @@ bat - cat alternative
 ripgrep-all - grep alternative
 sd - sed alternative
 termshark - wireshark alternative
+bettercap - network monitoring
 httpie - curl alternative
 smap - map network
 nmap - network scanner
@@ -196,6 +148,8 @@ zap - web app scanner
 
 ## TODO
 
+* change README.md to reflect change to Go programming languagae
+* ⚠️ add useful links with open by firefox option
 * ⚠️ export git auto-update to Ruby gem
 * ⚠️ add install and uninstall for one program
 * ⚠️ make user able to read Homebrew information about a particular program; thin wrapper-like around Homebrew - not to deep, just basic install, uninstall and info, also very important, __update__
