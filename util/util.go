@@ -16,6 +16,8 @@ import (
 	"github.com/nuteksecurity/nutek-apple/structs"
 )
 
+var Version string = "3.0.0-alpha3.1"
+
 func gitUpdate(upstream bool, verbose bool) error {
 	if verbose {
 		fmt.Println("saving current working directory")
@@ -56,9 +58,32 @@ func gitUpdate(upstream bool, verbose bool) error {
 	}
 
 	// Create a pipe to capture both stdout and stderr.
-	output, err := pull.CombinedOutput()
+	output, errGitPull := pull.CombinedOutput()
+
+	// Handle cases with or without a newline character
+	stdoutGitPull := string(output[:len(output)])
+	stderrGitPull := "" // Initialize stderr as empty string
+
+	// Split the output based on the first newline character (if present)
+	if i := bytes.IndexByte(output, '\n'); i != -1 {
+		stdoutGitPull = string(output[:i])
+		stderrGitPull = string(output[i:])
+	} else {
+		stdoutGitPull = string(output) // If no newline, stdout is the entire output
+	}
+
+	// if verbose {
+	fmt.Print(stdoutGitPull)
+	fmt.Print(stderrGitPull)
+	// }
+
+	isInstalled := exec.Command("which", "nutek-apple")
+	output, err = isInstalled.CombinedOutput()
+
+	var isNotInstalled bool = false
 	if err != nil {
-		fmt.Println("Error executing git command:", err)
+		isNotInstalled = true
+		fmt.Println("Nutek Apple is not installed as standalone command. Installing...")
 	}
 
 	// Handle cases with or without a newline character
@@ -78,30 +103,34 @@ func gitUpdate(upstream bool, verbose bool) error {
 		fmt.Print(stderr)
 	}
 
-	withError := strings.Contains(stdout, "error") || strings.Contains(stderr, "error")
-	ahead := strings.Contains(stdout, "ahead") || strings.Contains(stderr, "ahead")
-	upToDate := strings.Contains(stdout, "up to date.") || strings.Contains(stderr, "up to date.")
-	updated := strings.Contains(stdout, "Updating ") || strings.Contains(stderr, "Updating ")
-	rebase := strings.Contains(stdout, "rebase") || strings.Contains(stderr, "rebase")
+	var isDifferentVersionInstalled bool = false
+	if !isNotInstalled {
+		versionCmd := exec.Command("nutek-apple", "--version")
+		output, err := versionCmd.Output()
+		if err != nil {
+			return fmt.Errorf("error: %s, when trying to determine the version of product", err)
+		}
+		version := strings.Split(strings.TrimSpace(string(output)), " ")[2]
+		if version != Version {
+			isDifferentVersionInstalled = true
+		}
+	}
 
-	if upToDate {
-		if verbose {
-			fmt.Println("Everything up to date!")
-		}
-	} else if withError {
-		fmt.Println("hint: if you dant want to perform the update, pass '--noupdate' argument")
-		if strings.Contains(stderr, "You have unstaged changes") || strings.Contains(stdout, "You have unstaged changes") {
-			return fmt.Errorf("error: %s, you have to commit your changes to the repository.\nAny program list or bookmarks have to be commited to git first.\nUse 'git add filename' and 'git commit -m \"descriptive comment\"'", err)
-		}
-		return fmt.Errorf("error: git pull command failed")
-	} else if ahead {
-		fmt.Println("hint: if you dant want to perform the update, pass '--noupdate' argument")
-		if verbose {
-			fmt.Printf("You're working on your own version of nutek-apple 🍎 and youre ahead.\nCommit and create a pull request when you're ready.\n") // Prompt the user for input
-		}
+	withError := strings.Contains(stdoutGitPull, "error") || strings.Contains(stderrGitPull, "error") || strings.Contains(stderrGitPull, "You have unstaged changes") ||
+		strings.Contains(stdoutGitPull, "You have unstaged changes")
+	ahead := strings.Contains(stdoutGitPull, "ahead") || strings.Contains(stderrGitPull, "ahead")
+	upToDate := strings.Contains(stdoutGitPull, "up to date.") || strings.Contains(stderrGitPull, "up to date.")
+	updated := strings.Contains(stdoutGitPull, "Updating ") || strings.Contains(stderrGitPull, "Updating ") || isNotInstalled || isDifferentVersionInstalled
+	rebase := strings.Contains(stdoutGitPull, "rebase") || strings.Contains(stderrGitPull, "rebase")
 
+	if withError {
+		fmt.Println("hint: if you dant want to perform the update, pass '--noupdate' argument")
+		if strings.Contains(stderrGitPull, "You have unstaged changes") || strings.Contains(stdoutGitPull, "You have unstaged changes") {
+			return fmt.Errorf("error: %s, you have to commit your changes to the repository.\nAny program list or bookmarks have to be commited to git repository first.\nUse 'git add filename' and 'git commit -m \"descriptive comment\"'", errGitPull)
+		}
+		return fmt.Errorf("error: git pull command failed with error: %s", errGitPull)
 	} else if updated {
-		fmt.Println("repository updated... building Nutek Apple...")
+		fmt.Println("building Nutek Apple...")
 		if verbose {
 			fmt.Println("saving current working directory")
 		}
@@ -152,31 +181,33 @@ func gitUpdate(upstream bool, verbose bool) error {
 		if verbose {
 			fmt.Println("removing old symlink")
 		}
-		runme = exec.Command("rm", os.Getenv("HOMEBREW_PREFIX")+"/bin/nutek-apple")
-		output, err = runme.CombinedOutput()
+		if !isNotInstalled {
+			runme = exec.Command("rm", os.Getenv("HOMEBREW_PREFIX")+"/bin/nutek-apple")
+			output, err = runme.CombinedOutput()
 
-		// Handle cases with or without a newline character
-		stdout = string(output[:len(output)])
-		stderr = "" // Initialize stderr as empty string
+			// Handle cases with or without a newline character
+			stdout = string(output[:len(output)])
+			stderr = "" // Initialize stderr as empty string
 
-		// Split the output based on the first newline character (if present)
-		if i := bytes.IndexByte(output, '\n'); i != -1 {
-			stdout = string(output[:i])
-			stderr = string(output[i:])
-		} else {
-			stdout = string(output) // If no newline, stdout is the entire output
+			// Split the output based on the first newline character (if present)
+			if i := bytes.IndexByte(output, '\n'); i != -1 {
+				stdout = string(output[:i])
+				stderr = string(output[i:])
+			} else {
+				stdout = string(output) // If no newline, stdout is the entire output
+			}
+
+			if verbose {
+				fmt.Println(stdout)
+				fmt.Println(stderr)
+			}
+
+			if err != nil {
+				fmt.Printf("failed to update when removing old symlink to Nutek Apple, error: %s\n", err)
+			}
 		}
-
 		if verbose {
-			fmt.Println(stdout)
-			fmt.Println(stderr)
-		}
-
-		if err != nil {
-			fmt.Printf("failed to update when removing old symlink to Nutek Apple, error: %s\n", err)
-		}
-		if verbose {
-			fmt.Println("symlinking nutek-apple to /use/local/bin/nutek-apple")
+			fmt.Println("symlinking nutek-apple to $HOMEBREW_PREFIX/bin/nutek-apple")
 		}
 		// macOS thing to do
 		runme = exec.Command("ln", "-s", rootPath+"/nutek-apple", os.Getenv("HOMEBREW_PREFIX")+"/bin/nutek-apple")
@@ -209,6 +240,16 @@ func gitUpdate(upstream bool, verbose bool) error {
 		if err != nil {
 			return fmt.Errorf("error: %s, when going back to directory when the Nutek Apple was invoked after update", err)
 		}
+	} else if upToDate {
+		if verbose {
+			fmt.Println("Everything up to date!")
+		}
+	} else if ahead {
+		fmt.Println("hint: if you dant want to perform the update, pass '--noupdate' argument")
+		if verbose {
+			fmt.Printf("You're working on your own version of nutek-apple 🍎 and youre ahead.\nCommit and create a pull request when you're ready.\n") // Prompt the user for input
+		}
+
 	} else if rebase {
 		if verbose {
 			fmt.Println("You have work to do. Commit and update rebased code. To restart from a new 'git pull origin main', or 'git pull upstream main'")
@@ -222,6 +263,15 @@ func gitUpdate(upstream bool, verbose bool) error {
 
 func Update(argsSlice []string, runme func() error) error {
 	for _, arg := range argsSlice {
+		if arg == "--version" || arg == "-v" {
+			if err := runme(); err != nil {
+				return fmt.Errorf("error: cli app returns %s", err)
+			}
+			return nil
+		}
+	}
+
+	for _, arg := range argsSlice {
 		if arg == "--noupdate" {
 			if err := runme(); err != nil {
 				return fmt.Errorf("error: cli app returns %s", err)
@@ -232,7 +282,7 @@ func Update(argsSlice []string, runme func() error) error {
 
 	var verbose bool = false
 	for _, arg := range argsSlice {
-		if arg == "-v" || arg == "--verbose" {
+		if arg == "--verbose" {
 			verbose = true
 		}
 	}

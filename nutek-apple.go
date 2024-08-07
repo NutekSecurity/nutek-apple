@@ -15,7 +15,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "nutek-apple"
 	app.Usage = "Programs YOU want to use and links YOU want click!\nFind out more on https://github.com/NutekSecurity/nutek-apple"
-	app.Version = "3.0.0"
+	app.Version = util.Version
 	app.Commands = []*cli.Command{
 		{
 			Name:        "install",
