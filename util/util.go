@@ -1,7 +1,6 @@
 package util
 
 import (
-	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -74,8 +73,10 @@ func gitUpdate(upstream bool, verbose bool) error {
 		stdout = string(output) // If no newline, stdout is the entire output
 	}
 
-	fmt.Print(stdout)
-	fmt.Print(stderr)
+	if verbose {
+		fmt.Print(stdout)
+		fmt.Print(stderr)
+	}
 
 	withError := strings.Contains(stdout, "error") || strings.Contains(stderr, "error")
 	ahead := strings.Contains(stdout, "ahead") || strings.Contains(stderr, "ahead")
@@ -84,27 +85,19 @@ func gitUpdate(upstream bool, verbose bool) error {
 	rebase := strings.Contains(stdout, "rebase") || strings.Contains(stderr, "rebase")
 
 	if upToDate {
-		fmt.Println("Everything up to date!")
+		if verbose {
+			fmt.Println("Everything up to date!")
+		}
 	} else if withError {
 		fmt.Println("hint: if you dant want to perform the update, pass '--noupdate' argument")
-		// if strings.Contains(stderr, "You have unstaged changes") {
-		// 	return fmt.Errorf("error: %s, you have to commit your changes to the repository. Any program list or bookmarks have to be commited to git first. Use 'git add filename' and 'git commit -m \"descriptive comment\"'", err)
-		// }
+		if strings.Contains(stderr, "You have unstaged changes") || strings.Contains(stdout, "You have unstaged changes") {
+			return fmt.Errorf("error: %s, you have to commit your changes to the repository.\nAny program list or bookmarks have to be commited to git first.\nUse 'git add filename' and 'git commit -m \"descriptive comment\"'", err)
+		}
 		return fmt.Errorf("error: git pull command failed")
 	} else if ahead {
 		fmt.Println("hint: if you dant want to perform the update, pass '--noupdate' argument")
-		reader := bufio.NewReader(os.Stdin) // Create a buffered reader for standard input
-
-		fmt.Print("You're working on your own version of nutek-apple 🍎 Do you want to continue? (yes/no): ") // Prompt the user for input
-
-		input, _ := reader.ReadString('\n') // Read the input until a newline character is encountered
-		input = input[:len(input)-1]        // Remove the trailing newline character
-
-		input = strings.ToLower(input)
-
-		if !strings.Contains(input, "y") {
-			fmt.Println("Exit")
-			os.Exit(1)
+		if verbose {
+			fmt.Printf("You're working on your own version of nutek-apple 🍎 and youre ahead.\nCommit and create a pull request when you're ready.\n") // Prompt the user for input
 		}
 
 	} else if updated {
@@ -148,8 +141,10 @@ func gitUpdate(upstream bool, verbose bool) error {
 			stdout = string(output) // If no newline, stdout is the entire output
 		}
 
-		fmt.Println(stdout)
-		fmt.Println(stderr)
+		if verbose {
+			fmt.Println(stdout)
+			fmt.Println(stderr)
+		}
 
 		if err != nil {
 			return fmt.Errorf("failed to update when building Nutek Apple, error: %s", err)
@@ -172,8 +167,10 @@ func gitUpdate(upstream bool, verbose bool) error {
 			stdout = string(output) // If no newline, stdout is the entire output
 		}
 
-		fmt.Println(stdout)
-		fmt.Println(stderr)
+		if verbose {
+			fmt.Println(stdout)
+			fmt.Println(stderr)
+		}
 
 		if err != nil {
 			fmt.Printf("failed to update when removing old symlink to Nutek Apple, error: %s\n", err)
@@ -197,8 +194,10 @@ func gitUpdate(upstream bool, verbose bool) error {
 			stdout = string(output) // If no newline, stdout is the entire output
 		}
 
-		fmt.Println(stdout)
-		fmt.Println(stderr)
+		if verbose {
+			fmt.Println(stdout)
+			fmt.Println(stderr)
+		}
 
 		if err != nil {
 			return fmt.Errorf("failed to update when symlinking Nutek Apple, error: %s", err)
