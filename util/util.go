@@ -79,7 +79,7 @@ func gitUpdate(upstream bool, verbose bool) error {
 
 	withError := strings.Contains(stdout, "error") || strings.Contains(stderr, "error")
 	ahead := strings.Contains(stdout, "ahead") || strings.Contains(stderr, "ahead")
-	upToDate := strings.Contains(stdout, "Already up to date.") || strings.Contains(stderr, "Already up to date.")
+	upToDate := strings.Contains(stdout, "up to date.") || strings.Contains(stderr, "up to date.")
 	updated := strings.Contains(stdout, "Updating ") || strings.Contains(stderr, "Updating ")
 	rebase := strings.Contains(stdout, "rebase") || strings.Contains(stderr, "rebase")
 
