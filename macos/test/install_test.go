@@ -4,14 +4,15 @@ import (
 	"testing"
 
 	"github.com/nuteksecurity/nutek-apple/macos"
+	"github.com/nuteksecurity/nutek-apple/util"
 )
 
 func TestInstallOllama(t *testing.T) {
-	result, err := macos.Install("ollama")
+	err := macos.Install("ollama")
 	if err != nil {
 		t.Error(err)
 	}
-	if !result {
-		t.Errorf("already installed: %s", "ollama")
+	if !util.IsInstalled("ollama") {
+		t.Errorf("error: ollama did not installed on macOS")
 	}
 }

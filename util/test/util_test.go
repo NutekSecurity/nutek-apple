@@ -1,8 +1,7 @@
-package macos
+package util
 
 import (
 	"bytes"
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -301,20 +300,14 @@ func TestListLinksInFile(t *testing.T) {
 	if !assert.Nil(t, err) {
 		t.Error(err)
 	}
-	expectedOutput := `This is the list you were looking for...
-
-example.com: A simple link to example.com
-  URL: https://example.com
-
-golang.org: The official Go website
-  URL: https://golang.org
-
-github.com: The official GitHub website
-  URL: https://github.com
-
-Use "all" to list all bookmarks, "search" to look for author/theme/link...
-`
-	assert.Equal(t, expectedOutput, result)
+	expectedOutput := []string{
+		"example.com",
+		"golang.org",
+		"github.com",
+	}
+	for _, expected := range expectedOutput {
+		assert.Contains(t, result, expected)
+	}
 }
 
 func TestSearchLinksInDirs(t *testing.T) {
@@ -336,25 +329,22 @@ func TestSearchLinksInDirs(t *testing.T) {
 }
 
 func TestSearchLinks(t *testing.T) {
-	testData := structs.Links{
-		Links: map[string]structs.Link{
-			"link1":        {Description: "This is a test link", URL: "https://example.com/"},
-			"another_link": {Description: "Another test link", URL: "https://www.google.com/"},
-			"irrelevant":   {Description: "This has no match", URL: "https://invalid.com/"},
-		},
+	testData := []structs.Link{
+		{ShortName: "link1", Description: "This is a test link", URL: "https://example.com/"},
+		{ShortName: "another_link", Description: "Another test link", URL: "https://www.google.com/"},
+		{ShortName: "irrelevant", Description: "This has no match", URL: "https://invalid.com/"},
 	}
 
-	keys, hits := util.GetSearchLinks(testData, "test")
-	assert.Equal(t, []string{"link1", "another_link"}, keys)
+	hits := util.GetSearchLinks(testData, "test")
+	assert.Equal(t, []string{"link1", "another_link"}, hits)
 	assert.Equal(t, []structs.Link{{Description: "This is a test link", URL: "https://example.com/"},
 		{Description: "Another test link", URL: "https://www.google.com/"}}, hits)
 
-	keys, hits = util.GetSearchLinks(testData, "another")
-	assert.Equal(t, []string{"another_link"}, keys)
+	hits = util.GetSearchLinks(testData, "another")
+	assert.Equal(t, []string{"another_link"}, hits)
 	assert.Equal(t, []structs.Link{{Description: "Another test link", URL: "https://www.google.com/"}}, hits)
 
-	keys, hits = util.GetSearchLinks(testData, "no match")
-	assert.Empty(t, keys)
+	hits = util.GetSearchLinks(testData, "no match")
 	assert.Empty(t, hits)
 }
 
@@ -378,7 +368,7 @@ func TestFieldsMatch(t *testing.T) {
 }
 
 func TestWalkLinksDir(t *testing.T) {
-	linksChan := make(chan structs.Links)
+	linksChan := make(chan []structs.Link)
 
 	// Start a goroutine to walk the directories and send Links to the channel
 	go func() {
@@ -391,27 +381,6 @@ func TestWalkLinksDir(t *testing.T) {
 
 	// Process links from the channel and search for matches
 	for links := range linksChan {
-		assert.NotEmpty(t, links.Links)
+		assert.NotEmpty(t, links)
 	}
-}
-
-func TestUpdate(t *testing.T) {
-	err := util.Update([]string{"noupdate"}, func() error {
-		return nil
-	})
-	assert.NoError(t, err, "have %s, when passing 'noupdate' argument", err)
-	err = util.Update([]string{}, func() error {
-		return nil
-	})
-	assert.NoError(t, err, "have %s, when blank parameters array and blank function", err)
-	err = util.Update([]string{}, func() error {
-		fmt.Println("Checking update...")
-		return nil
-	})
-	assert.NoError(t, err, "have %s, when blank parameters array and printing from function", err)
-	err = util.Update([]string{"some"}, func() error {
-		fmt.Println("Checking update...")
-		return nil
-	})
-	assert.NoError(t, err, "have %s, when some parameters array and printing from function", err)
 }

@@ -1,10 +1,13 @@
 package structs
 
 type Link struct {
-	URL         string
-	Description string
-}
-
-type Links struct {
-	Links map[string]Link
+	ShortName    string
+	LongName     string
+	URL          string
+	Description  string
+	Tags         []string
+	Languages    []string
+	Technologies []Technology
+	Author       []Author
+	AddedBy      Author
 }
