@@ -142,10 +142,12 @@ func main() {
 	}
 
 	// first update the nutek repository, then run the app
-	util.Update(os.Args, func() error {
+	if err := util.Update(os.Args, func() error {
 		if err := app.Run(os.Args); err != nil {
 			log.Fatal(err)
 		}
 		return nil
-	})
+	}); err != nil {
+		log.Fatal(err)
+	}
 }

@@ -1,6 +1,8 @@
 package util
 
 import (
+	"bufio"
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"html"
@@ -15,56 +17,194 @@ import (
 	"github.com/nuteksecurity/nutek-apple/structs"
 )
 
-// def check_version_and_update
-//   response = `git pull origin main --rebase`
-//   puts response
-//   if response.include?('error')
-//     puts '❌ Error: Could not update from the repository.'
-//     puts 'hint: You can run the script with --no-update to skip the update check.'
-//     exit
-//   elsif response.include? 'ahead'
-//     puts 'hint: You can run the script with --no-update to skip the update check.'
-//     on_your_own = get_yes_no_input "You're working on your own version of nutek-apple 🍎 Do you want to continue? (yes/no): "
-//     return if on_your_own
+func gitUpdate(upstream bool) error {
+	fmt.Println("saving current working directory")
+	wdPath, err := os.Getwd()
+	if err != nil {
+		return fmt.Errorf("failed to update when getting working dir, error: %s", err)
+	}
+	fmt.Println("searching for project root of Nutek Apple")
+	rootPath, err := projectRoot()
+	if err != nil {
+		return fmt.Errorf("failed to update when getting project root, error: %s", err)
+	}
+	fmt.Println("going to root of Nutek Apple project")
+	err = os.Chdir(rootPath)
+	if err != nil {
+		return fmt.Errorf("error: %s, when going to directory where the Nutek Apple is before update", err)
+	}
+	var pull *exec.Cmd
+	fmt.Println("pulling possible update from the GitHub")
+	if upstream {
+		pull = exec.Command("git", "pull", "upstream", "main", "--rebase")
+	} else {
+		pull = exec.Command("git", "pull", "origin", "main", "--rebase")
+	}
+	fmt.Println("changing directory back to where Nutek Apple command was issued")
+	err = os.Chdir(wdPath)
+	if err != nil {
+		return fmt.Errorf("error: %s, when going back to directory when the Nutek Apple was invoked after update", err)
+	}
 
-//     puts 'Exit'
-//     exit
-//   elsif response.include?('Already up to date.')
-//       puts '✅ Already up to date.'
-//   elsif response.include?('Updating ')
-//     puts '✅ Updated successfully. Please restart the script.'
-//     exit
-//   else
-//     puts '❌ Error: Git command failed.'
-//     puts 'hint: You can run the script with --no-update to skip the update check.'
-//     exit
-//   end
-// end
+	// Create a pipe to capture both stdout and stderr.
+	output, err := pull.CombinedOutput()
+	if err != nil {
+		fmt.Println("Error executing git command:", err)
+	}
 
-// def update(args)
-//   return if args.include?('--no-update')
+	// Handle cases with or without a newline character
+	stdout := string(output[:len(output)])
+	stderr := "" // Initialize stderr as empty string
 
-//   puts 'Updating...'
-//   # check if we're in a git repo
-//   if File.directory?('.git')
-//     # check if we're in the right repo
-//     if `git remote get-url origin`.chomp == 'https://github.com/NutekSecurity/nutek-apple.git' || `git remote get-url upstream`.chomp == 'https://github.com/NutekSecurity/nutek-apple.git'
-//       check_version_and_update
-//     else
-//       puts '❌ Error: Not in the right git repository, not updating.'
-//       puts 'hint: You can try to run the script with --no-update to skip the update check.'
-//       exit
-//     end
-//   else
-//     puts '❌ Error: Not in a git repoository, not updating.'
-//     puts 'hint: You can try to run the script with --no-update to skip the update check.'
-//     exit
-//   end
-// end
+	// Split the output based on the first newline character (if present)
+	if i := bytes.IndexByte(output, '\n'); i != -1 {
+		stdout = string(output[:i])
+		stderr = string(output[i:])
+	} else {
+		stdout = string(output) // If no newline, stdout is the entire output
+	}
+
+	fmt.Print(stdout)
+	fmt.Print(stderr)
+
+	withError := strings.Contains(stdout, "error") || strings.Contains(stderr, "error")
+	ahead := strings.Contains(stdout, "ahead") || strings.Contains(stderr, "ahead")
+	upToDate := strings.Contains(stdout, "Already up to date.") || strings.Contains(stderr, "Already up to date.")
+	updated := strings.Contains(stdout, "Updating ") || strings.Contains(stderr, "Updating ")
+	rebase := strings.Contains(stdout, "rebase") || strings.Contains(stderr, "rebase")
+
+	if upToDate {
+		fmt.Println("Everything up to date!")
+	} else if withError {
+		fmt.Println("hint: if you dant want to perform the update, pass 'noupdate' argument")
+		// if strings.Contains(stderr, "You have unstaged changes") {
+		// 	return fmt.Errorf("error: %s, you have to commit your changes to the repository. Any program list or bookmarks have to be commited to git first. Use 'git add filename' and 'git commit -m \"descriptive comment\"'", err)
+		// }
+		return fmt.Errorf("error: git pull command failed")
+	} else if ahead {
+		fmt.Println("hint: if you dant want to perform the update, pass 'noupdate' argument")
+		reader := bufio.NewReader(os.Stdin) // Create a buffered reader for standard input
+
+		fmt.Print("You're working on your own version of nutek-apple 🍎 Do you want to continue? (yes/no): ") // Prompt the user for input
+
+		input, _ := reader.ReadString('\n') // Read the input until a newline character is encountered
+		input = input[:len(input)-1]        // Remove the trailing newline character
+
+		input = strings.ToLower(input)
+
+		if !strings.Contains(input, "y") {
+			fmt.Println("Exit")
+			os.Exit(1)
+		}
+
+	} else if updated {
+		fmt.Println("repository updated... building Nutek Apple...")
+		fmt.Println("saving current working directory")
+		wdPath, err := os.Getwd()
+		if err != nil {
+			return fmt.Errorf("failed to update when getting working dir, error: %s", err)
+		}
+		fmt.Println("searching for project root of Nutek Apple")
+		rootPath, err := projectRoot()
+		if err != nil {
+			return fmt.Errorf("failed to update when getting project root, error: %s", err)
+		}
+		fmt.Println("going to root of Nutek Apple project")
+		err = os.Chdir(rootPath)
+		if err != nil {
+			return fmt.Errorf("error: %s, when going to directory where the Nutek Apple is before update", err)
+		}
+
+		fmt.Println("building new version of Nutek Apple")
+		runme := exec.Command("go", "build")
+		output, err := runme.CombinedOutput()
+
+		// Handle cases with or without a newline character
+		stdout := string(output[:len(output)])
+		stderr := "" // Initialize stderr as empty string
+
+		// Split the output based on the first newline character (if present)
+		if i := bytes.IndexByte(output, '\n'); i != -1 {
+			stdout = string(output[:i])
+			stderr = string(output[i:])
+		} else {
+			stdout = string(output) // If no newline, stdout is the entire output
+		}
+
+		fmt.Println(stdout)
+		fmt.Println(stderr)
+
+		if err != nil {
+			return fmt.Errorf("failed to update when building Nutek Apple, error: %s", err)
+		}
+
+		fmt.Println("removing old symlink")
+		runme = exec.Command("rm", os.Getenv("HOMEBREW_PREFIX")+"/bin/nutek-apple")
+		output, err = runme.CombinedOutput()
+
+		// Handle cases with or without a newline character
+		stdout = string(output[:len(output)])
+		stderr = "" // Initialize stderr as empty string
+
+		// Split the output based on the first newline character (if present)
+		if i := bytes.IndexByte(output, '\n'); i != -1 {
+			stdout = string(output[:i])
+			stderr = string(output[i:])
+		} else {
+			stdout = string(output) // If no newline, stdout is the entire output
+		}
+
+		fmt.Println(stdout)
+		fmt.Println(stderr)
+
+		if err != nil {
+			fmt.Printf("failed to update when removing old symlink to Nutek Apple, error: %s\n", err)
+		}
+
+		fmt.Println("symlinking nutek-apple to /use/local/bin/nutek-apple")
+		// macOS thing to do
+		runme = exec.Command("ln", "-s", rootPath+"/nutek-apple", os.Getenv("HOMEBREW_PREFIX")+"/bin/nutek-apple")
+		output, err = runme.CombinedOutput()
+
+		// Handle cases with or without a newline character
+		stdout = string(output[:len(output)])
+		stderr = "" // Initialize stderr as empty string
+
+		// Split the output based on the first newline character (if present)
+		if i := bytes.IndexByte(output, '\n'); i != -1 {
+			stdout = string(output[:i])
+			stderr = string(output[i:])
+		} else {
+			stdout = string(output) // If no newline, stdout is the entire output
+		}
+
+		fmt.Println(stdout)
+		fmt.Println(stderr)
+
+		if err != nil {
+			return fmt.Errorf("failed to update when symlinking Nutek Apple, error: %s", err)
+		}
+
+		fmt.Println("changing directory back to where Nutek Apple command was issued")
+		err = os.Chdir(wdPath)
+		if err != nil {
+			return fmt.Errorf("error: %s, when going back to directory when the Nutek Apple was invoked after update", err)
+		}
+	} else if rebase {
+		fmt.Println("You have work to do. Commit and update rebased code. To restart from a new 'git pull origin main', or 'git pull upstream main'")
+	} else {
+		return fmt.Errorf("error: git command '%s' failed", pull.String())
+	}
+
+	return nil
+}
 
 func Update(argsSlice []string, runme func() error) error {
 	for _, arg := range argsSlice {
 		if arg == "noupdate" {
+			if err := runme(); err != nil {
+				return fmt.Errorf("error: cli app returns %s", err)
+			}
 			return nil
 		}
 	}
@@ -78,6 +218,16 @@ func Update(argsSlice []string, runme func() error) error {
 	}
 	for _, path := range paths {
 		if path.Name() == ".git" && path.IsDir() {
+			fmt.Println("saving current working directory")
+			wdPath, err := os.Getwd()
+			if err != nil {
+				return fmt.Errorf("failed to update when getting working dir, error: %s", err)
+			}
+			fmt.Println("going to root of Nutek Apple project")
+			err = os.Chdir(projectRoot)
+			if err != nil {
+				return fmt.Errorf("error: %s, when going to directory where the Nutek Apple is before checking remote url", err)
+			}
 			remoteOrigin := exec.Command("git", "remote", "get-url", "origin")
 			remoteUpstream := exec.Command("git", "remote", "get-url", "upstream")
 			orginOutput, err := remoteOrigin.Output()
@@ -100,15 +250,33 @@ func Update(argsSlice []string, runme func() error) error {
 			if len(gitRemoteErrors) == 2 {
 				return fmt.Errorf("error: %s and error: %s", gitRemoteErrors[0], gitRemoteErrors[1])
 			}
-			if string(orginOutput) == "https://github.com/NutekSecurity/nutek-apple.git" || string(upstreamOutput) == "https://github.com/NutekSecurity/nutek-apple.git" ||
-				string(orginOutput) == "https://github.com/nuteksecurity/nutek-apple.git" || string(upstreamOutput) == "https://github.com/nuteksecurity/nutek-apple.git" {
-				// check_version_and_update
+			if strings.Contains(string(orginOutput), "https://github.com/NutekSecurity/nutek-apple.git") ||
+				strings.Contains(string(orginOutput), "https://github.com/nuteksecurity/nutek-apple.git") {
+				err := gitUpdate(false)
+				if err != nil {
+					return err
+				}
+			} else if strings.Contains(string(upstreamOutput), "https://github.com/nuteksecurity/nutek-apple.git") ||
+				strings.Contains(string(upstreamOutput), "https://github.com/NutekSecurity/nutek-apple.git") {
+				err := gitUpdate(true)
+				if err != nil {
+					return err
+				}
+			} else {
+				return fmt.Errorf("error: did not found repository link in git")
 			}
-			runme()
+			fmt.Println("changing directory back to where Nutek Apple command was issued")
+			err = os.Chdir(wdPath)
+			if err != nil {
+				return fmt.Errorf("error: %s, when going back to directory when the Nutek Apple was invoked after checking remote url", err)
+			}
+			if err := runme(); err != nil {
+				return fmt.Errorf("error: cli app returns %s", err)
+			}
 			return nil
 		}
 	}
-	return fmt.Errorf("error: did not update Nutek Apple git repository")
+	return fmt.Errorf("error: not in a git repository")
 }
 
 var mu sync.Mutex
