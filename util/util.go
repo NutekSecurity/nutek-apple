@@ -15,6 +15,102 @@ import (
 	"github.com/nuteksecurity/nutek-apple/structs"
 )
 
+// def check_version_and_update
+//   response = `git pull origin main --rebase`
+//   puts response
+//   if response.include?('error')
+//     puts '❌ Error: Could not update from the repository.'
+//     puts 'hint: You can run the script with --no-update to skip the update check.'
+//     exit
+//   elsif response.include? 'ahead'
+//     puts 'hint: You can run the script with --no-update to skip the update check.'
+//     on_your_own = get_yes_no_input "You're working on your own version of nutek-apple 🍎 Do you want to continue? (yes/no): "
+//     return if on_your_own
+
+//     puts 'Exit'
+//     exit
+//   elsif response.include?('Already up to date.')
+//       puts '✅ Already up to date.'
+//   elsif response.include?('Updating ')
+//     puts '✅ Updated successfully. Please restart the script.'
+//     exit
+//   else
+//     puts '❌ Error: Git command failed.'
+//     puts 'hint: You can run the script with --no-update to skip the update check.'
+//     exit
+//   end
+// end
+
+// def update(args)
+//   return if args.include?('--no-update')
+
+//   puts 'Updating...'
+//   # check if we're in a git repo
+//   if File.directory?('.git')
+//     # check if we're in the right repo
+//     if `git remote get-url origin`.chomp == 'https://github.com/NutekSecurity/nutek-apple.git' || `git remote get-url upstream`.chomp == 'https://github.com/NutekSecurity/nutek-apple.git'
+//       check_version_and_update
+//     else
+//       puts '❌ Error: Not in the right git repository, not updating.'
+//       puts 'hint: You can try to run the script with --no-update to skip the update check.'
+//       exit
+//     end
+//   else
+//     puts '❌ Error: Not in a git repoository, not updating.'
+//     puts 'hint: You can try to run the script with --no-update to skip the update check.'
+//     exit
+//   end
+// end
+
+func Update(argsSlice []string, runme func() error) error {
+	for _, arg := range argsSlice {
+		if arg == "noupdate" {
+			return nil
+		}
+	}
+	projectRoot, err := projectRoot()
+	if err != nil {
+		return err
+	}
+	paths, err := os.ReadDir(projectRoot)
+	if err != nil {
+		return err
+	}
+	for _, path := range paths {
+		if path.Name() == ".git" && path.IsDir() {
+			remoteOrigin := exec.Command("git", "remote", "get-url", "origin")
+			remoteUpstream := exec.Command("git", "remote", "get-url", "upstream")
+			orginOutput, err := remoteOrigin.Output()
+			var gitRemoteErrors []string = []string{}
+			if err != nil {
+				if err.Error() == "error: exit status 2" && string(orginOutput) == "" {
+					fmt.Println("git origin remote do not match Nutek Apple repository")
+				} else {
+					gitRemoteErrors = append(gitRemoteErrors, fmt.Sprintf("error: %s, when using git remote get-url origin output: %s", err, orginOutput))
+				}
+			}
+			upstreamOutput, err := remoteUpstream.Output()
+			if err != nil {
+				if err.Error() == "error: exit status 2" && string(orginOutput) == "" {
+					fmt.Println("git upstream remote do not match Nutek Apple repository")
+				} else {
+					gitRemoteErrors = append(gitRemoteErrors, fmt.Sprintf("error: %s, when using git remote get-url origin output: %s", err, upstreamOutput))
+				}
+			}
+			if len(gitRemoteErrors) == 2 {
+				return fmt.Errorf("error: %s and error: %s", gitRemoteErrors[0], gitRemoteErrors[1])
+			}
+			if string(orginOutput) == "https://github.com/NutekSecurity/nutek-apple.git" || string(upstreamOutput) == "https://github.com/NutekSecurity/nutek-apple.git" ||
+				string(orginOutput) == "https://github.com/nuteksecurity/nutek-apple.git" || string(upstreamOutput) == "https://github.com/nuteksecurity/nutek-apple.git" {
+				// check_version_and_update
+			}
+			runme()
+			return nil
+		}
+	}
+	return fmt.Errorf("error: did not update Nutek Apple git repository")
+}
+
 var mu sync.Mutex
 var Ch chan string
 

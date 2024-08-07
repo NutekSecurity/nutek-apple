@@ -2,6 +2,7 @@ package macos
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -392,4 +393,25 @@ func TestWalkLinksDir(t *testing.T) {
 	for links := range linksChan {
 		assert.NotEmpty(t, links.Links)
 	}
+}
+
+func TestUpdate(t *testing.T) {
+	err := util.Update([]string{"noupdate"}, func() error {
+		return nil
+	})
+	assert.NoError(t, err, "have %s, when passing 'noupdate' argument", err)
+	err = util.Update([]string{}, func() error {
+		return nil
+	})
+	assert.NoError(t, err, "have %s, when blank parameters array and blank function", err)
+	err = util.Update([]string{}, func() error {
+		fmt.Println("Checking update...")
+		return nil
+	})
+	assert.NoError(t, err, "have %s, when blank parameters array and printing from function", err)
+	err = util.Update([]string{"some"}, func() error {
+		fmt.Println("Checking update...")
+		return nil
+	})
+	assert.NoError(t, err, "have %s, when some parameters array and printing from function", err)
 }
