@@ -1,0 +1,24 @@
+{
+    "links": {
+        "seclists": {
+            "url": "https://github.com/danielmiessler/SecLists",
+            "description": "SecLists is the security tester's companion. It's a collection of multiple types of lists used during security assessments, collected in one place. List types include usernames, passwords, URLs, sensitive data patterns, fuzzing payloads, web shells, and many more."
+        },
+        "payloadsallthethings": {
+            "url": "https://github.com/swisskyrepo/PayloadsAllTheThings",
+            "description": "A list of useful payloads and bypass for Web Application Security and Pentest/CTF"
+        },
+        "hacktricks": {
+            "url": "https://book.hacktricks.xyz",
+            "description": "Give FREE access to EDUCATIONAL hacking resources to ALL Internet."
+        },
+        "exploitdb": {
+            "url": "https://www.exploit-db.com/",
+            "description": "Exploit Database"
+        },
+        "peass": {
+            "url": "https://github.com/peass-ng/PEASS-ng",
+            "description": "Script that finds weakness in Linux/Windows os"
+        }
+    }
+}

@@ -1,0 +1,16 @@
+{
+	"links": {
+		"example.com": {
+			"url": "https://example.com",
+			"description": "A simple link to example.com"
+		},
+		"golang.org": {
+			"url": "https://golang.org",
+			"description": "The official Go website"
+		},
+		"github.com": {
+			"url": "https://github.com",
+			"description": "The official GitHub website"
+		}
+	}
+}

@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 
+install_path=$NUTEK_APPLE_ROOT
+
+
 if [[ $(which nutek-apple ) ]]; then
     echo "OK. nutek-apple already installed"
     exit 0
 fi
 
 # install Homebrew
-if ! [[ $(which brew) ]] ; then
+if ! [[ $(which brew) ]] && [[ "$OSTYPE" == "darwin"* ]]; then
     echo "Installing Homebrew for macOS (and Linux)"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 else
@@ -36,9 +39,21 @@ fi
 
 "aarch64"
 
-# Clone dummy repository and build Go program
-mkdir ~/.nutek-apple
-cd ~/.nutek-apple
+# Clone repository and build Go program
+if ! [[ install_path== "" ]]; then
+    git clone https://github.com/nuteksecurity/nutek-apple.git $install_path
+    cd $install_path
+else
+    git clone https://github.com/nuteksecurity/nutek-apple.git $HOME/.nutek-apple
+    cd $HOME/.nutek-apple
+fi
+
+go build .
+sudo ln -s nutek-apple /opt/bin # where to symlink on macOS silicon?
+echo "export NUTEK_APPLE_ROOT=$HOME/.nutek-apple" >> ~/.zprofile
+
+
+
 if [[ $(which curl) ]]; then
     if [[ "$OSTYPE" == "darwin"* ]] && [[ "$(uname -m)" == "arm644"* ]]; then 
         echo "Downloading nutek-apple for macOS arm64"

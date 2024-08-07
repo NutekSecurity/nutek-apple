@@ -84,7 +84,12 @@ This will let you incorporate any changes you've made.
 
 ## What you will get?
 
-6GB worth of loot, including:
+Dividing & conquering my vision of _nutek apple_ I think, it would be nice if you
+could add some of your lists... Let's start first with Homebrew. It's not complicated -
+check if it exist, add instructions to install, description and possibly a manual page,
+or your blog post about it, and I think we should be good. Everything is already laid out.
+
+CLI list
 
 ```text
 ollama - run LLM locally
@@ -132,6 +137,8 @@ mdbook - book generator
 
 and
 
+GUI list
+
 ```text
 podman-desktop - docker alternative
 imhex - hex editor
@@ -148,14 +155,11 @@ zap - web app scanner
 
 ## TODO
 
-* change README.md to reflect change to Go programming languagae
+* ⚠️ change README.md to reflect change to Go programming languagae
+* ⚠️ write git update, from ruby-version
+* ⚠️ add also very important, __update__ programs
+* ⚠️ add links, programs and subfolders for nuteksecurity where the json files will be placed
 * ⚠️ add useful links with open by firefox option
-* ⚠️ export git auto-update to Ruby gem
-* ⚠️ add install and uninstall for one program
-* ⚠️ make user able to read Homebrew information about a particular program; thin wrapper-like around Homebrew - not to deep, just basic install, uninstall and info, also very important, __update__
-* ⚠️ keep user in my app, so no info is leaked to Homebrew and back.
-* ⚠️ add programming languages (rust, ruby - (how? maybe with an installation script?), python, dotnet (C#?, powershell?), go...) to list of available programs
 * ⚠️ add nutek-cipher and nutek-smoke
-* ⚠️ make a proposal for katarina to gather around Zed text editor and collaborate
-* ⚠️ write about each program in my book - _Hacking with a DREAM in the mind_
-* ⚠️ add test that check if software is installed, and other cli commands
+* ⚠️ make a proposal for Katarina - Multiplayer Hacking Hub to gather around Zed text editor and collaborate
+* ⚠️ write about each program in my book - _Hacking with a DREAM in the mind_? Really... Every?
