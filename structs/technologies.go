@@ -6,6 +6,10 @@ type Technology struct {
 	Description     string
 	PackageManagers []PackageManager
 	OS              []OS
+	Tags            []Tag
+	AddedBy         Author
+	URL             []Link
+	Manual          []Link
 }
 
 type OS struct {
@@ -14,4 +18,5 @@ type OS struct {
 	Description     string
 	PackageManagers []PackageManager
 	Author          []Author
+	AddedBy         Author
 }

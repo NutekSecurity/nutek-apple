@@ -14,6 +14,7 @@ func Install(programs ...string) []error {
 	var errorList []error = []error{}
 	for _, program := range programs {
 		// lists handling
+
 		if !util.IsInstalled(program) {
 			installList = append(installList, program)
 		}

@@ -5,16 +5,13 @@ type Program struct {
 	LongName        string
 	Description     string
 	Tags            []string
-	URL             string
-	Manual          string
-	PackageManagers []string
-	License         string
+	URL             []Link
+	Manual          []Link
+	PackageManagers []PackageManager
+	License         License
 	Languages       []string
-	Technology      []Technology
-}
-
-type Programs struct {
-	List    []Program
-	Author  string
-	Version string
+	Technologies    []Technology
+	Source          Link
+	OS              []OS
+	AddedBy         Author
 }

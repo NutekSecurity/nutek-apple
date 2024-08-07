@@ -2,30 +2,17 @@
 
 # nutek-apple 🍎
 
-Nutek Security Platform for macOS and Linux operating systems. Tools for hackers, bug hunters and hobbiests. You might like it, you might not. It's a matter of taste.
+Lists, lists, lists...
 
 ## What it do?
 
-This - part of `Nutek Security Platform` - program for _macOS_ and _Linux_ operating systems installs all the neccessairly _tools_ for well prepared 
-_hacker_, _bug hunter_ or
-a seasoned _hobbiest_ willing to pursue a way of turning things inside out and
-is not scared to use only command line tools with . Why? Almost all of the fancy
-GUI apps started as a command line tool, or are
-in many ways similar, or even less capable, because in command line - you're
-on the top, you're left alone like _Alice in Wonderland_ deep inside your dreams of power, and you know what? You can have this power! Just follow along.
-
-If you look for some other help in hacking, pentesting or else, there are
-links to other parts of Internet, that when you instal Firefox, or have
-been using Safari, will open in browser window...
-
-
-The only exceptions for the CLI rule are text editors (NeoVim in CLI), terminals and Wireshark (try termshark in CLI).
+It shows and hosts various lists, groups, bookmarks, programs and other information about the world of _Hacking_
 
 ## Installation
 
 ### Homebrew
 
-1. Install Homebrew (dependency for most mmacOS packages and some Linux too)
+1. Install Homebrew (dependency for most mmacOS programs (and some Linux too)
 
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -45,31 +32,10 @@ or directly from upstream on the official Go language webpage
 
 [https://go.dev/dl/](https://go.dev/dl/)
 
-### nutek-apple installation using go or latest binaries
-
-Use Go or download [latest builds](https://github.com/nuteksecurity/nutek-apple/releases/)
+### nutek-apple installation
 
 ```bash
-go install -v github.com/nuteksecurity/nutek-apple@latest
-```
-
-### nutek-apple first run
-
-4. You're on the start line. Run this command:
-
-```shell
-bundle install
-```
-
-```shell
-ruby nutek-apple.rb
-```
-
-or make this happen:
-
-```shell
-chmod 744 nutek-apple.rb
-./nutek-apple.rb
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/NutekSecurity/nutek-apple/HEAD/install.sh)"
 ```
 
 ## If you are stuck, and can't run the script
@@ -80,7 +46,7 @@ call the git pull command:
 git pull origin main --rebase
 ```
 
-This will let you incorporate any changes you've made.
+This will let you incorporate any changes you've made. You might need to commit first.
 
 ## What you will get?
 
@@ -89,77 +55,13 @@ could add some of your lists... Let's start first with Homebrew. It's not compli
 check if it exist, add instructions to install, description and possibly a manual page,
 or your blog post about it, and I think we should be good. Everything is already laid out.
 
-CLI list
-
-```text
-ollama - run LLM locally
-podman - docker alternative
-neovim - text editor
-openvpn - vpn client
-irssi - irc client
-dos2unix - convert dos to unix
-ipcalc - ip calculator
-whatmask - ip calculator
-expect - automate interactive applications
-fd - find alternative
-tmux - terminal multiplexer
-lsd - ls alternative
-bat - cat alternative
-ripgrep-all - grep alternative
-sd - sed alternative
-termshark - wireshark alternative
-bettercap - network monitoring
-httpie - curl alternative
-smap - map network
-nmap - network scanner
-p0f - passive os fingerprinting
-masscan - port scanner
-feroxbuster - directory bruteforcer
-ffuf - directory bruteforcer
-nuclei - vulnerability scanner
-mitmproxy - transparent proxy
-metasploit - red team toolbox
-httpx - http scanner
-amass - subdomain scanner
-jq - json parser
-htmlq - html parser
-httrack - website copier
-monolith - website copier
-mdcat - markdown reader
-ouch - archive extractor
-exploitdb - exploit database
-asciinema - terminal recorder
-agg - ascii art generator
-hashcat - password cracker
-john-jumbo - password cracker
-mdbook - book generator
-```
-
-and
-
-GUI list
-
-```text
-podman-desktop - docker alternative
-imhex - hex editor
-warp - terminal
-alacritty - terminal
-kitty - terminal
-wireshark - network analyzer
-font-hack-nerd-font - font
-zed - text editor
-vscodium - text editor
-firefox - web browser
-zap - web app scanner
-```
-
 ## TODO
 
 * ⚠️ change README.md to reflect change to Go programming languagae
-* ⚠️ write git update, from ruby-version
+* 💚 write git update, from ruby-version
 * ⚠️ add also very important, __update__ programs
 * ⚠️ add links, programs and subfolders for nuteksecurity where the json files will be placed
-* ⚠️ add useful links with open by firefox option
-* ⚠️ add nutek-cipher and nutek-smoke
+* 💚 add useful links with open option
+* ⚠️ add nutek-cipher and nutek-smoke, Watch, bing-search
 * ⚠️ make a proposal for Katarina - Multiplayer Hacking Hub to gather around Zed text editor and collaborate
-* ⚠️ write about each program in my book - _Hacking with a DREAM in the mind_? Really... Every?
+* ⚠️ write about each program in my book - _Hacking with a DREAM in the mind_? Really... Every? Soon it will be impossible due to time.

@@ -5,8 +5,8 @@ type Link struct {
 	LongName     string
 	URL          string
 	Description  string
-	Tags         []string
-	Languages    []string
+	Tags         []Tag
+	Languages    []Language
 	Technologies []Technology
 	Author       []Author
 	AddedBy      Author

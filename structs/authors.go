@@ -6,7 +6,8 @@ type Author struct {
 	Description  string
 	Contact      []string
 	Origins      []string
-	Website      string
+	URL          []Link
 	Technologies []Technology
 	Languages    []Language
+	Tags         []Tag
 }

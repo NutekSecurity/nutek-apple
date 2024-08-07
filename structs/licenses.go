@@ -1,14 +1,11 @@
 package structs
 
-type PackageManager struct {
+type License struct {
 	ShortName   string
 	LongName    string
 	Description string
-	OS          []OS
+	FullText    string
 	Tags        []Tag
 	AddedBy     Author
-	License     License
 	URL         []Link
-	Program     Program
-	Manual      []Link
 }

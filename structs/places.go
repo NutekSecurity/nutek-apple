@@ -8,4 +8,7 @@ type Place struct {
 	Languages     []Language
 	Contact       []string
 	MaxPopulation int
+	AddedBy       Author
+	Tags          []Tag
+	URL           string
 }
