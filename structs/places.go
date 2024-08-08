@@ -11,4 +11,5 @@ type Place struct {
 	AddedBy       Author
 	Tags          []Tag
 	URL           string
+	Technologies  []Technology
 }

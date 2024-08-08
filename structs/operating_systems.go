@@ -1,13 +1,10 @@
 package structs
 
-type Technology struct {
+type OS struct {
 	ShortName       string
 	LongName        string
 	Description     string
 	PackageManagers []PackageManager
-	OS              []OS
-	Tags            []Tag
+	Author          []Author
 	AddedBy         Author
-	URL             []Link
-	Manual          []Link
 }
