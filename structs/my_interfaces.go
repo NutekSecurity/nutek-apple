@@ -1,20 +1,27 @@
 package structs
 
 type PrettyPrint interface {
-	PrettyPrint()
+	PrettyPrintOneList(list string)
+	PrettyPrintAllListsInOneFolder(folder string)
 }
 
 type Install interface {
-	Install()
+	Install(packageManager PackageManager, program string)
 }
 
 type Search interface {
-	Search()
-	SearchName()
+	Search(searchTerm string)
+	SearchByShortName(searchTerm string)
 }
 
-type List interface {
-	ListAll()
-	ListFolders()
-	ListOneFolder()
+type Enumerate interface {
+	ListFolders(folders ...string)
+	ListOneFolder(folder string)
+}
+
+type DoesExist interface {
+	DoExistByListName()
+	DoExistByShortName()
+	DoExistByFullListName()
+	DoFolderExist()
 }
