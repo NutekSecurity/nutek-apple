@@ -7,4 +7,5 @@ type OS struct {
 	PackageManagers []PackageManager
 	Author          []Author
 	AddedBy         Author
+	Technologies    []Technology
 }

@@ -10,4 +10,5 @@ type ProgrammingLanguage struct {
 	PackageManagers   []PackageManager
 	OtherWayToInstall []string
 	Manual            []Link
+	Technologies      []Technology
 }
